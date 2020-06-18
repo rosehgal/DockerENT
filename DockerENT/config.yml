@@ -1,0 +1,29 @@
+logger:
+  version: 1
+  disable_existing_loggers: false
+  formatters:
+    simple:
+      format: >-
+          %(asctime)s [%(process)s] [%(processName)s] [%(threadName)s]
+          %(levelname)s %(name)s:%(lineno)d - %(message)s
+      datefmt: "%Y-%m-%d %H:%M:%S"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.handlers.TimedRotatingFileHandler
+      formatter: simple
+      filename: ./logs/DockerENT
+      when: midnight
+      encoding: utf8
+      backupCount: 5
+  loggers:
+    adal-python:
+      level: WARNING
+  root:
+    level: DEBUG
+    handlers:
+      - console
+      - file
