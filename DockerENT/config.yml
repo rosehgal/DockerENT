@@ -9,9 +9,8 @@ logger:
       datefmt: "%Y-%m-%d %H:%M:%S"
   handlers:
     console:
-      class: logging.StreamHandler
+      class: rich.logging.RichHandler
       formatter: simple
-      stream: ext://sys.stdout
     file:
       class: logging.handlers.TimedRotatingFileHandler
       formatter: simple
@@ -23,7 +22,7 @@ logger:
     adal-python:
       level: WARNING
   root:
-    level: DEBUG
+    level: INFO
     handlers:
       - console
       - file
