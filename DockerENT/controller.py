@@ -108,4 +108,4 @@ def main():
                 report[key].append(result[key])
 
     if report:
-        _log.info(json.dumps(report))
+        _log.info(json.dumps(report, indent=2))
