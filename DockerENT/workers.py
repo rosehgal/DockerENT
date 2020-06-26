@@ -50,7 +50,7 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
     :return: None
     """
     _containers = []
-    if containers is None or containers == 'all':
+    if containers == 'all':
         _containers = docker_client.containers.list()
     else:
         _containers.append(docker_client.containers.get(containers))
@@ -66,10 +66,9 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
     plugins = _plugins
     containers = _containers
 
+    _log.info('{} docker containers loaded ...'.format(len(containers)))
     _log.info('{} docker plugin(s) loaded ...'.format(
         len(plugins)))
-
-    _log.info('{} docker containers loaded ...'.format(len(containers)))
 
     executor_args = []
     for container in containers:
@@ -93,7 +92,7 @@ def docker_nw_scan_worker(nws, plugins, process_pool, output_queue):
     :return: None
     """
     _nws = []
-    if nws is None or nws == 'all':
+    if nws == 'all':
         _nws = docker_client.networks.list()
     else:
         _nws.append(docker_client.networks.get(nws))
@@ -109,10 +108,9 @@ def docker_nw_scan_worker(nws, plugins, process_pool, output_queue):
     plugins = _plugins
     nws = _nws
 
+    _log.info('{} docker nws loaded ...'.format(len(nws)))
     _log.info('{} docker-network plugin(s) loaded ...'.format(
         len(plugins)))
-
-    _log.info('{} docker containers loaded ...'.format(len(nws)))
 
     executor_args = []
     for nw in nws:

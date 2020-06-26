@@ -11,13 +11,6 @@ logger:
     console:
       class: rich.logging.RichHandler
       formatter: simple
-    file:
-      class: logging.handlers.TimedRotatingFileHandler
-      formatter: simple
-      filename: ./logs/DockerENT
-      when: midnight
-      encoding: utf8
-      backupCount: 5
   loggers:
     adal-python:
       level: WARNING
@@ -25,4 +18,3 @@ logger:
     level: INFO
     handlers:
       - console
-      - file
