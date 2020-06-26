@@ -2,11 +2,11 @@ import logging
 
 _log = logging.getLogger(__name__)
 
-_plugin_name_ = 'file-system-info'
+_plugin_name_ = 'cron-info'
 
 
 def scan(container, output_queue):
-    """Plugin to perform checks on filesystem info.
+    """Plugin to perform checks on cron jobs.
 
     :param container: Container to process data for.
     :param output_queue: Output holder for this plugin.
@@ -21,27 +21,22 @@ def scan(container, output_queue):
 
     _log.info('Staring {} Plugin ...'.format(_plugin_name_))
 
-    driveinfo = {
-        "MOUNT": {
-            "cmd": "mount",
-            "msg": "Mount results",
-            "results": []
-        },
-        "FSTAB": {
-            "cmd": "cat /etc/fstab",
-            "msg": "fstab entries",
+    croninfo = {
+        "user-cron-jobs": {
+            "cmd": "crontab -l 2>/dev/null",
+            "msg": "Users cron jobs",
             "results": []
         }
     }
 
-    for item in driveinfo:
-        cmd = driveinfo[item]['cmd']
+    for item in croninfo:
+        cmd = croninfo[item]['cmd']
         output = container.exec_run(cmd).output.decode('utf-8')
         result = output.split('\n')
-        driveinfo[item]['results'] = result
-        del driveinfo[item]['cmd']
+        croninfo[item]['results'] = result
+        del croninfo[item]['cmd']
 
-    result = driveinfo
+    result = croninfo
 
     res[container.short_id] = {
         _plugin_name_: result
