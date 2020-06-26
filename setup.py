@@ -7,7 +7,6 @@ setuptools.setup(
     name="DockerENT",
     version="0.0.1",
     author="Rohit Sehgal",
-    author_email="rohitsehgal1994@gmail.com",
     description="A tool to analyse issues with running docker container(s)",
     long_description=long_description,
     long_description_content_type="text/markdown",
