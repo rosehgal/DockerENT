@@ -55,7 +55,7 @@ def main():
         '--process',
         nargs='?',
         dest='process_count',
-        const=2,
+        default=2,
         type=int,
         help='Run scans in parallel.'
     )
@@ -63,6 +63,7 @@ def main():
     args = parser.parse_args()
 
     process_count = args.process_count
+
     docker_containers = args.docker_container
     docker_plugins = args.docker_plugins
 
@@ -71,25 +72,27 @@ def main():
 
     _log.info('Starting application ...')
 
-    _log.debug('Creating application pool space with count {}'
-               .format(process_count))
+    _log.info('Creating application pool space with count {}'
+              .format(process_count))
 
     process_pool = pool.Pool(process_count)
     output_q = multiprocessing.Manager().Queue()
 
-    workers.docker_scan_worker(
-        containers=docker_containers,
-        plugins=docker_plugins,
-        process_pool=process_pool,
-        output_queue=output_q
-    )
+    if docker_containers is not None:
+        workers.docker_scan_worker(
+            containers=docker_containers,
+            plugins=docker_plugins,
+            process_pool=process_pool,
+            output_queue=output_q
+        )
 
-    workers.docker_nw_scan_worker(
-        nws=docker_nws,
-        plugins=docker_nw_plugins,
-        process_pool=process_pool,
-        output_queue=output_q
-    )
+    if docker_nws is not None:
+        workers.docker_nw_scan_worker(
+            nws=docker_nws,
+            plugins=docker_nw_plugins,
+            process_pool=process_pool,
+            output_queue=output_q
+        )
 
     process_pool.close()
     process_pool.join()
@@ -104,4 +107,5 @@ def main():
                 report[key] = []
                 report[key].append(result[key])
 
-    _log.info(json.dumps(report))
+    if report:
+        _log.info(json.dumps(report))
