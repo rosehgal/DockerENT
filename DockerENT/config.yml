@@ -8,13 +8,17 @@ logger:
           %(levelname)s %(name)s:%(lineno)d - %(message)s
       datefmt: "%Y-%m-%d %H:%M:%S"
   handlers:
-    console:
+    rich_console:
       class: rich.logging.RichHandler
       formatter: simple
+    console:
+      class: logging.StreamHandler
+      formatter: simple
+      stream: ext://sys.stdout
   loggers:
     adal-python:
       level: WARNING
   root:
     level: INFO
     handlers:
-      - console
+      - rich_console
