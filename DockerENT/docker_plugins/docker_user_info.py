@@ -49,8 +49,18 @@ def scan(container, output_queue):
     }
 
     for item in userinfo:
-        cmd = userinfo[item]['cmd']
-        output = container.exec_run(cmd).output.decode('utf-8')
+        cmd = "sh -c " + "\"" + userinfo[item]['cmd'] + "\""
+        command_result = container.exec_run(
+            cmd=cmd,
+            stderr=False,
+            stdin=False)
+
+        # If command is not executed successfully, dont show in output
+        if command_result.exit_code != 0:
+            del userinfo[item]
+            continue
+
+        output = command_result.output.decode('utf-8')
         result = output.split('\n')
         userinfo[item]['results'] = result
         del userinfo[item]['cmd']
