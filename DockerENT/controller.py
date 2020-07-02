@@ -8,7 +8,7 @@ import multiprocessing
 
 from multiprocessing import pool
 
-from DockerENT import workers
+from DockerENT import scanner_workers
 
 # Define module-level logger.
 _log = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ def main():
     output_q = multiprocessing.Manager().Queue()
 
     if docker_containers is not None:
-        workers.docker_scan_worker(
+        scanner_workers.docker_scan_worker(
             containers=docker_containers,
             plugins=docker_plugins,
             process_pool=process_pool,
@@ -87,7 +87,7 @@ def main():
         )
 
     if docker_nws is not None:
-        workers.docker_nw_scan_worker(
+        scanner_workers.docker_nw_scan_worker(
             nws=docker_nws,
             plugins=docker_nw_plugins,
             process_pool=process_pool,
