@@ -94,7 +94,7 @@ def scan(container, output_queue):
         output = command_result.output.decode('utf-8')
         result = output.split('\n')
         historyfiles[item]['results'] = result
-        del historyfiles[item]
+        del historyfiles[item]['cmd']
 
     result = historyfiles
 
