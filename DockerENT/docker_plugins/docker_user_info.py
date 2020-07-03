@@ -51,8 +51,6 @@ def scan(container, output_queue):
     command_list = list(userinfo.keys())
 
     for item in command_list:
-        _log.info(item)
-
         cmd = "sh -c " + "\"" + userinfo[item]['cmd'] + "\""
         command_result = container.exec_run(
             cmd=cmd,
