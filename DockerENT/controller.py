@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import json
 import logging
 import multiprocessing
 
 from multiprocessing import pool
 
-from DockerENT import workers
+from DockerENT import scanner_workers
+from DockerENT import output_worker
 
 # Define module-level logger.
 _log = logging.getLogger(__name__)
@@ -60,6 +60,17 @@ def main():
         help='Run scans in parallel.'
     )
 
+    output_plugin = parser.add_argument_group()
+    output_plugin.add_argument(
+        '-o',
+        '--output',
+        nargs='?',
+        dest='output',
+        default='file',
+        type=str,
+        help='Output plugin to write data to'
+    )
+
     args = parser.parse_args()
 
     process_count = args.process_count
@@ -70,6 +81,8 @@ def main():
     docker_nws = args.docker_network
     docker_nw_plugins = args.docker_nw_plugins
 
+    output = args.output
+
     _log.info('Starting application ...')
 
     _log.info('Creating application pool space with count {}'
@@ -79,7 +92,7 @@ def main():
     output_q = multiprocessing.Manager().Queue()
 
     if docker_containers is not None:
-        workers.docker_scan_worker(
+        scanner_workers.docker_scan_worker(
             containers=docker_containers,
             plugins=docker_plugins,
             process_pool=process_pool,
@@ -87,7 +100,7 @@ def main():
         )
 
     if docker_nws is not None:
-        workers.docker_nw_scan_worker(
+        scanner_workers.docker_nw_scan_worker(
             nws=docker_nws,
             plugins=docker_nw_plugins,
             process_pool=process_pool,
@@ -97,15 +110,4 @@ def main():
     process_pool.close()
     process_pool.join()
 
-    report = {}
-    while not output_q.empty():
-        result = output_q.get()
-        for key in result.keys():
-            if key in report.keys():
-                report[key].append(result[key])
-            else:
-                report[key] = []
-                report[key].append(result[key])
-
-    if report:
-        _log.info(json.dumps(report, indent=2))
+    output_worker.output_handler(queue=output_q, target=output)

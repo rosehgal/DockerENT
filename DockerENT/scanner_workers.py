@@ -19,6 +19,7 @@ docker_client = docker.from_env()
 def executor(target, plugin, output_queue, is_docker=False):
     """
 
+    :param output_queue:
     :param target:
     :param plugin: Plugin to execute
     :param is_docker:

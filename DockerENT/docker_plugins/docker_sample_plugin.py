@@ -22,7 +22,9 @@ def scan(container, output_queue):
 
     }
     result = {
-        'status': 'good'
+        'sample-plugin': {
+            'results': ['good']
+        }
     }
 
     # do some processing.

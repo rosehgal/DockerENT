@@ -2,3 +2,5 @@ venv/
 .idea/
 *.pyc
 logs/*
+*.json
+*.html
