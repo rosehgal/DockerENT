@@ -1,0 +1,498 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>DockerENT | Analysis Report</title>
+    <style type="text/css">
+        body {
+            font: 10pt arial;
+        }
+
+        #dockernetwork {
+            height: 1000px;
+            border: 1px solid lightgray;
+            background-color: #333333;
+        }
+
+        .full-height {
+            height: 100%;
+        }
+
+        .Modal {
+            display: block;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+            padding-top: 100px;
+            background-color: black;
+            background-color: rgba(0, 0, 0, 0.4);
+            -webkit-transition: 0.5s;
+            overflow: auto;
+            transition: all 0.3s linear;
+        }
+
+        .Modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 4px;
+            max-width: 500px;
+            height: 450px;
+        }
+
+        .ModalOpen {
+            overflow: hidden;
+        }
+
+        .is-hidden {
+            display: none;
+        }
+
+        .is-visuallyHidden {
+            opacity: 0;
+        }
+
+        .Close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 16px;
+        }
+
+        .Close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .is-blurred {
+            filter: blur(2px);
+            -webkit-filter: blur(2px);
+        }
+
+
+        body {
+            background-color: #FCFCFC;
+        }
+
+
+        .cover {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 1;
+        }
+
+
+        .progress_bar {
+            height: 10px;
+            background: rgb(0, 110, 255);
+            width: 0%;
+            -moz-transition: all 4s ease;
+            -moz-transition-delay: 1s;
+            -webkit-transition: all 4s ease;
+            -webkit-transition-delay: 1s;
+            transition: all 4s ease;
+            transition-delay: 1s;
+        }
+
+        /*
+        CSS for pop-up
+        */
+        body {
+            background-color: #FCFCFC;
+        }
+
+        .cover {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .blur-in {
+            -webkit-animation: blur 2s forwards;
+            -moz-animation: blur 2s forwards;
+            -o-animation: blur 2s forwards;
+            animation: blur 2s forwards;
+        }
+
+        .blur-out {
+            -webkit-animation: blur-out 2s forwards;
+            -moz-animation: blur-out 2s forwards;
+            -o-animation: blur-out 2s forwards;
+            animation: blur-out 2s forwards;
+        }
+
+        @-webkit-keyframes blur {
+            0% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+
+            100% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+        }
+
+        @-moz-keyframes blur {
+            0% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+
+            100% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+        }
+
+        @-o-keyframes blur {
+            0% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+
+            100% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+        }
+
+        @keyframes blur {
+            0% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+
+            100% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+        }
+
+        @-webkit-keyframes blur-out {
+            0% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+
+            100% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+        }
+
+        @-moz-keyframes blur-out {
+            0% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+
+            100% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+        }
+
+        @-o-keyframes blur-out {
+            0% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+
+            100% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes blur-out {
+            0% {
+                -webkit-filter: blur(4px);
+                -moz-filter: blur(4px);
+                -o-filter: blur(4px);
+                -ms-filter: blur(4px);
+                filter: blur(4px);
+            }
+
+            100% {
+                -webkit-filter: blur(0px);
+                -moz-filter: blur(0px);
+                -o-filter: blur(0px);
+                -ms-filter: blur(0px);
+                filter: blur(0px);
+            }
+        }
+
+        .content {
+            width: 650px;
+            margin: 0 auto;
+            padding-top: 100px;
+        }
+
+        span {
+            color: dimgray;
+        }
+
+        .pop-up {
+            position: fixed;
+            margin: 5% auto;
+            left: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        .box {
+            background-color: whitesmoke;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10%;
+            position: relative;
+            -webkit-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .button {
+            background-color: #2496ed;
+            margin-bottom: 33px;
+            align-self: center;
+        }
+
+        .button:hover {
+            background-color: #7CCF29;
+            -webkit-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-button {
+            transition: all 0.5s ease;
+            position: relative;
+            background-color: #2496ed;
+            padding: 1.5px 7px;
+            left: 0;
+            margin-left: -10px;
+            margin-top: -9px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            color: white;
+            -webkit-box-shadow: -4px -2px 6px 0px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: -4px -2px 6px 0px rgba(0, 0, 0, 0.1);
+            box-shadow: -3px 1px 6px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-button:hover {
+            background-color: #07416d;
+            color: #fff;
+        }
+
+        h3 {
+            text-align: center;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            color: #fff;
+            background-color: #2496ed;
+        }
+
+        p {
+            padding: 20px 65px 10px 65px;
+            color: dimgray;
+        }
+
+        h1 {
+            color: dimgray;
+            font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://visjs.github.io/vis-network/standalone/umd/vis-network.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the main container and the body
+        var body = document.getElementsByTagName('body');
+        var container = document.getElementById('myContainer');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.className = "Modal is-hidden";
+                body.className = "";
+                container.className = "MainContainer";
+                container.parentElement.className = "";
+            }
+        }
+
+
+        var nodes = null;
+        var edges = null;
+        var network = null;
+
+        function progress() {
+            // Assign your element ID to a variable.
+            var progress = document.getElementById("progressBar");
+            // Pause the animation for 100 so we can animate from 0 to x%
+            setTimeout(
+                function () {
+                    progress.style.width = "100%";
+                    // PHP Version:
+                    // progress.style.width = "<?php echo $progressPercentage; ?>";
+                    progress.style.backgroundColor = "green";
+                }
+                , 10);
+        }
+
+        // Called when the Visualization API is loaded.
+        function draw() {
+            // create people.
+            // value corresponds with the age of the person
+
+            nodes = new vis.DataSet({{ nodes }});
+        edges = new vis.DataSet({{ edges }});
+
+        // create a network
+        var container = document.getElementById('dockernetwork');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            nodes: {
+                borderWidth: 4,
+                size: 50,
+                color: {
+                    border: '#222222',
+                    background: '#666666'
+                },
+                font: { color: '#eeeeee' }
+            },
+            edges: {
+                color: 'lightgray',
+                length: 200
+            }
+        };
+
+
+        network = new vis.Network(container, data, options);
+        network.on('click', function (properties) {
+            var ids = properties.nodes;
+            var clickedNode = nodes.get(ids)[0];
+            console.log('clicked nodes:', clickedNode);
+            // Open the modal
+            var modal = document.getElementById('myModal');
+            var pluginname = document.getElementById('pluginname')
+            pluginname.innerText = clickedNode.pluginname;
+
+            var plugindata = document.getElementById("plugindata");
+            plugindata.innerText = clickedNode.data;
+
+            modal.className = "Modal is-visuallyHidden";
+            setTimeout(function () {
+                container.className = "MainContainer is-blurred";
+                modal.className = "Modal";
+            }, 100);
+            container.parentElement.className = "ModalOpen";
+
+            // Close the modal
+            var btnClose = document.getElementById("closeModal");
+            btnClose.onclick = function () {
+                modal.className = "Modal is-hidden is-visuallyHidden";
+                body.className = "";
+                container.className = "MainContainer";
+                container.parentElement.className = "";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.className = "Modal is-hidden";
+                    body.className = "";
+                    container.className = "MainContainer";
+                    container.parentElement.className = "";
+                }
+            }
+        });
+        }
+    </script>
+
+</head>
+
+<body onload="progress();draw()">
+    <div id="progressBar" class="progress_bar"></div>
+    <div class="full-height" id="dockernetwork">
+    </div>
+
+    <div id="myModal" class="Modal is-hidden is-visuallyHidden">
+        <!-- Modal content -->
+        <div class="Modal-content">
+            <a href="#" class="close-button" id="closeModal">&#10006;</a>
+            <h3 id="pluginname">lorem ipsum</h3>
+            <p id="plugindata"></p>
+        </div>
+    </div>
+</body>
+
+</html>
