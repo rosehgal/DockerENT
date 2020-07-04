@@ -1,5 +1,6 @@
 """Main Script for the scanner."""
 import logging
+import logging.config
 
 from DockerENT import controller, config_parser
 
