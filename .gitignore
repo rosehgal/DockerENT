@@ -4,3 +4,4 @@ venv/
 logs/*
 *.json
 *.html
+!DockerENT/output_plugins/template.html
