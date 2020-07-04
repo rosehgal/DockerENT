@@ -32,12 +32,12 @@ def scan(container, output_queue):
             "msg": "Route(s)",
             "results": []
         },
-        "NETSTAT":{
+        "NETSTAT": {
             "cmd": "netstat -antup",
-             "msg": "Netstat",
-             "results": []
+            "msg": "Netstat",
+            "results": []
         }
-      }
+    }
 
     for item in netinfo:
         cmd = netinfo[item]['cmd']

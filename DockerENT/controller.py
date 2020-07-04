@@ -15,6 +15,12 @@ _log = logging.getLogger(__name__)
 
 
 def main():
+    """
+    This is the starting point of this application.
+
+    :return: None
+    """
+
     parser = argparse.ArgumentParser(
         prog='Find the vulnerabilities hidden in your running container(s).'
     )
