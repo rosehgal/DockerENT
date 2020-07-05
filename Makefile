@@ -9,6 +9,7 @@ clean: FORCE
 	rm -rf ./venv
 
 lint:
-	pylama DockerENT
+	. ./venv/bin/activate && isort --force-alphabetical-sort-within-sections --force-single-line-imports --virtual-env venv --reverse-relative DockerENT
+	. ./venv/bin/activate && pylama DockerENT
 
 FORCE:

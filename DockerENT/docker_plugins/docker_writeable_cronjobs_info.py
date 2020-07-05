@@ -1,3 +1,4 @@
+"""Docker cron jobs scan plugin."""
 import logging
 
 _log = logging.getLogger(__name__)
@@ -6,17 +7,23 @@ _plugin_name_ = 'cron-info'
 
 
 def scan(container, output_queue):
-    """Plugin to perform checks on cron jobs.
+    """Docker cron-jobs scan plugin.
 
-    :param container: Container to process data for.
+    :param container: container instance.
+    :type container: docker.models.containers.Container
+
     :param output_queue: Output holder for this plugin.
+    :type output_queue: multiprocessing.managers.AutoProxy[Queue]
 
     :return: This plugin returns the object in this form.
     {
-        _plugin_name_: object
+        _plugin_name_: {
+            'test_performed': {
+                'results':  []
+            }
+        }
     }
     """
-
     res = {}
 
     _log.info('Staring {} Plugin ...'.format(_plugin_name_))

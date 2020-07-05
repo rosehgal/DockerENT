@@ -1,26 +1,21 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""The controller module, the main method of this module starts DockerENT."""
+from DockerENT import output_worker
+from DockerENT import scanner_workers
+from multiprocessing import pool
 
 import argparse
 import logging
 import multiprocessing
-
-from multiprocessing import pool
-
-from DockerENT import scanner_workers
-from DockerENT import output_worker
 
 # Define module-level logger.
 _log = logging.getLogger(__name__)
 
 
 def main():
-    """
-    This is the starting point of this application.
+    """Start DockerENT application.
 
     :return: None
     """
-
     parser = argparse.ArgumentParser(
         prog='Find the vulnerabilities hidden in your running container(s).'
     )
@@ -78,16 +73,14 @@ def main():
     )
 
     args = parser.parse_args()
-
     process_count = args.process_count
+    output = args.output
 
     docker_containers = args.docker_container
     docker_plugins = args.docker_plugins
 
     docker_nws = args.docker_network
     docker_nw_plugins = args.docker_nw_plugins
-
-    output = args.output
 
     _log.info('Starting application ...')
 

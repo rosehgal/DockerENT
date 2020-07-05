@@ -1,5 +1,9 @@
-import logging
+"""File output plugin.
+
+Process the records and write the content to the file as plain json.
+"""
 import json
+import logging
 
 _log = logging.getLogger(__name__)
 
@@ -7,12 +11,16 @@ _plugin_name_ = 'file-output-plugin'
 
 
 def write(queue, filename='out.json'):
-    """This plugin will write the data to file system.
+    """Write report to to file.
 
-    :param filename: Name of file to output to.
     :param queue: The input queue which contains the data from various scan
         plugins.
-    :return:
+    :type queue: multiprocessing.managers.AutoProxy[Queue]
+
+    :param filename: Name of file to output to.
+    :type filename: str
+
+    :return: None
     """
     _log.info("Writing to file {} ...".format(filename))
 

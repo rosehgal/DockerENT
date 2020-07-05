@@ -1,19 +1,27 @@
+"""Docker scan sample plugin."""
 import logging
 
 _log = logging.getLogger(__name__)
 
-_plugin_name_ = 'sample'
+_plugin_name_ = 'sample_plugin'
 
 
 def scan(container, output_queue):
-    """
+    """Sample docker scan plugin.
 
-    :param container: Container to process data for.
+    :param container: container instance.
+    :type container: docker.models.containers.Container
+
     :param output_queue: Output holder for this plugin.
+    :type output_queue: multiprocessing.managers.AutoProxy[Queue]
 
     :return: This plugin returns the object in this form.
     {
-        'docker_sample_plugin': object
+        _plugin_name_: {
+            'test_performed': {
+                'results':  []
+            }
+        }
     }
     """
     _log.info('Staring {} Plugin ...'.format(_plugin_name_))
@@ -22,13 +30,13 @@ def scan(container, output_queue):
 
     }
     result = {
-        'sample-plugin': {
+        'test_performed': {
             'results': ['good']
         }
     }
 
     # do some processing.
-    # Since this is sample plugin there is not processing done here.
+    # Since this is sample plugin there is no processing.
 
     res[container.short_id] = {
         _plugin_name_: result

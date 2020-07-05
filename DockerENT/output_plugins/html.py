@@ -1,6 +1,11 @@
+"""HTML output plugin.
+
+Process the records and write the content to the html file which can show
+docker connects as networks. This file uses a templates called as template.html
+"""
+import jinja2
 import json
 import logging
-import jinja2
 
 _log = logging.getLogger(__name__)
 
@@ -10,9 +15,14 @@ _plugin_name_ = 'HTML_output_plugin'
 def write(queue, filename='out.html'):
     """Plugin to create beautiful html file for output.
 
-    :param queue:
-    :param filename:
-    :return:
+    :param queue: The input queue which contains the data from various scan
+        plugins.
+    :type queue: multiprocessing.managers.AutoProxy[Queue]
+
+    :param filename: Name of file to output to.
+    :type filename: str
+
+    :return: None
     """
     _log.info('Writing to {} ...'.format(filename))
 
