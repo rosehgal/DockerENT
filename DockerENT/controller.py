@@ -1,6 +1,9 @@
 """The controller module, the main method of this module starts DockerENT."""
+import copy
+
 from DockerENT import output_worker
 from DockerENT import scanner_workers
+from DockerENT import audit_workers
 from multiprocessing import pool
 
 import argparse
@@ -89,6 +92,7 @@ def main():
 
     process_pool = pool.Pool(process_count)
     output_q = multiprocessing.Manager().Queue()
+    audit_output_q = multiprocessing.Manager().Queue()
 
     if docker_containers is not None:
         scanner_workers.docker_scan_worker(
@@ -109,4 +113,7 @@ def main():
     process_pool.close()
     process_pool.join()
 
-    output_worker.output_handler(queue=output_q, target=output)
+    audit_workers.audit(output_q, audit_output_q)
+    output_worker.output_handler(queue=audit_output_q, target=output)
+
+
