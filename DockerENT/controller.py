@@ -63,6 +63,13 @@ def main():
         type=int,
         help='Run scans in parallel.'
     )
+    parser.add_argument(
+        '-a',
+        '--audit',
+        dest='audit',
+        action='store_true',
+        default=False
+    )
 
     output_plugin = parser.add_argument_group()
     output_plugin.add_argument(
@@ -78,6 +85,7 @@ def main():
     args = parser.parse_args()
     process_count = args.process_count
     output = args.output
+    audit = args.audit
 
     docker_containers = args.docker_container
     docker_plugins = args.docker_plugins
@@ -113,7 +121,9 @@ def main():
     process_pool.close()
     process_pool.join()
 
-    audit_workers.audit(output_q, audit_output_q)
+    if audit:
+        audit_workers.audit(output_q, audit_output_q)
+
     output_worker.output_handler(queue=audit_output_q, target=output)
 
 
