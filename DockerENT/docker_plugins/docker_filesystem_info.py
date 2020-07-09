@@ -63,7 +63,6 @@ def scan(container, output_queue):
     }
 
     for item in driveinfo.keys():
-        _log.info(item)
         if driveinfo[item]['isDockerAttribute']:
             option_result = utils.get_value_from_str_dotted_key(
                 docker_inspect_output,

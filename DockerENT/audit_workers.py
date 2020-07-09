@@ -26,7 +26,11 @@ def audit(input_queue, output_queue):
 
     :return: None
     """
+    _log.info('Starting audit worker ...')
+
     while not input_queue.empty():
         result = input_queue.get()
         _log.info(result)
         output_queue.put(result)
+
+    _log.info('Audit completed.')
