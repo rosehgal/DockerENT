@@ -121,5 +121,6 @@ def main():
 
     if audit:
         audit_workers.audit(output_q, audit_output_q)
+        output_worker.output_handler(queue=audit_output_q, target=output)
 
-    output_worker.output_handler(queue=audit_output_q, target=output)
+    output_worker.output_handler(queue=output_q, target=output)
