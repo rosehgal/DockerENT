@@ -71,13 +71,13 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
     :return: None
     """
     _containers = []
-    if containers == 'all':
+    if containers == 'all' or containers[0] == 'all':
         _containers = docker_client.containers.list()
     else:
         _containers.append(docker_client.containers.get(containers))
-
+    print(_containers)
     _plugins = []
-    if plugins is None or plugins == 'all':
+    if plugins is None or plugins == 'all' or plugins[0] == 'all':
         for importer, modname, ispkg in pkgutil.iter_modules(
                 DockerENT.docker_plugins.__path__):
             _plugins.append(modname)
@@ -88,8 +88,7 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
     containers = _containers
 
     _log.info('{} docker containers loaded ...'.format(len(containers)))
-    _log.info('{} docker plugin(s) loaded ...'.format(
-        len(plugins)))
+    _log.info('{} docker plugin(s) loaded ...'.format(len(plugins)))
 
     executor_args = []
     for container in containers:
@@ -98,7 +97,7 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
 
     _log.debug(executor_args)
 
-    process_pool.starmap_async(executor, executor_args)
+    process_pool.starmap(executor, executor_args)
 
 
 def docker_nw_scan_worker(nws, plugins, process_pool, output_queue):

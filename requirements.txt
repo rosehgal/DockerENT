@@ -1,3 +1,4 @@
+streamlit
 certifi==2020.6.20
 chardet==3.0.4
 colorama==0.4.3
