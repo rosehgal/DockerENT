@@ -93,10 +93,8 @@ def render_sidebar():
         ui_sidebar_docker_start_scan = ui_sidebar.button(
             'Start docker scan'
         )
-        print(_plugins)
 
     if ui_sidebar_docker_start_scan:
-        print(docker_scan_list)
         scan_dockers()
 
 
@@ -126,8 +124,6 @@ def scan_dockers():
             _plugins.append(modname)
     else:
         _plugins = docker_scan_plugins
-
-    print(_plugins)
 
     docker_scan_progress_bar = ui.progress(0)
     # List of Tuples(target, plugin)to hold target to plugin combinations
