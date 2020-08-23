@@ -147,6 +147,18 @@ def scan_dockers():
             )
     ui.success('Scan Complete')
 
+    report = {}
+    while not output_q.empty():
+        result = output_q.get()
+        for key in result.keys():
+            if key in report.keys():
+                report[key].append(result[key])
+            else:
+                report[key] = []
+                report[key].append(result[key])
+
+    ui.json(report)
+
 
 def scan_docker_networks():
     pass
