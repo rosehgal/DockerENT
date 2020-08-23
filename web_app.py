@@ -75,7 +75,7 @@ def render_sidebar():
     global docker_scan_plugins
 
     if scan_dockers_checkbox:
-        docker_scan_list = ui_sidebar.selectbox(
+        docker_scan_list = ui_sidebar.multiselect(
             label='Pick a single docker or all to start.',
             options=docker_list
         )
@@ -113,7 +113,8 @@ def scan_dockers():
     if docker_scan_list == 'all' or docker_scan_list[0] == 'all':
         _containers = docker_client.containers.list()
     else:
-        _containers.append(docker_client.containers.get(docker_scan_list))
+        for c in docker_scan_list:
+            _containers.append(docker_client.containers.get(c))
 
     _plugins = []
 
