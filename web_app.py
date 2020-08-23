@@ -6,6 +6,8 @@ import docker
 import multiprocessing
 import pkgutil
 import streamlit as ui
+import base64
+import json
 
 ui_sidebar = ui.sidebar
 
@@ -154,6 +156,12 @@ def scan_dockers():
                 report[key] = []
                 report[key].append(result[key])
 
+    b64report = base64.b64encode(json.dumps(report).encode())
+    href = f'<a href="data:text/json;base64,{b64report.decode("utf-8")}" download="report.json">Download JSON report</a>'
+    ui.markdown(
+        href,
+        unsafe_allow_html=True
+    )
     ui.json(report)
 
 
