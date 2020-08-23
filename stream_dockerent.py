@@ -44,7 +44,7 @@ if scan_dockers:
     _plugins = ['all']
     for importer, modname, ispkg in pkgutil.iter_modules(
             DockerENT.docker_plugins.__path__):
-        _plugins.append(modname)
+        _plugins.append(str(modname))
 
     docker_scan_plugins = sidebar.multiselect(
         'Select the list of plugins to execute',
@@ -85,7 +85,7 @@ if start_scan:
                 DockerENT.docker_plugins.__path__):
             _plugins.append(modname)
     else:
-        _plugins.append(plugins)
+        _plugins.append(docker_scan_plugins)
     print(_plugins)
 
     for container in _containers:
@@ -108,6 +108,4 @@ if start_scan:
             else:
                 report[key] = []
                 report[key].append(result[key])
-
-
     st.write(report)
