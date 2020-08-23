@@ -94,8 +94,8 @@ def render_sidebar():
             'Start docker scan'
         )
 
-    if ui_sidebar_docker_start_scan:
-        scan_dockers()
+        if ui_sidebar_docker_start_scan:
+            scan_dockers()
 
 
 def render_ui():
