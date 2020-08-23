@@ -1,14 +1,16 @@
 """UI for DockerENT"""
 import pkgutil
+
+from docker.models import plugins
+
 import DockerENT.scanner_workers
 
 import multiprocessing
-from multiprocessing import pool
 
 import streamlit as st
 import docker
 
-from DockerENT import scanner_workers, output_worker
+from DockerENT import scanner_workers
 
 sidebar = st.sidebar
 
@@ -31,6 +33,7 @@ progress_bar = None
 process_count = None
 docker_scan_plugins = None
 dockers_to_scan = None
+docker_scan_options = None
 
 if scan_dockers:
     docker_scan_options = sidebar.selectbox(
@@ -38,7 +41,7 @@ if scan_dockers:
         docker_list
     )
 
-    _plugins = []
+    _plugins = ['all']
     for importer, modname, ispkg in pkgutil.iter_modules(
             DockerENT.docker_plugins.__path__):
         _plugins.append(modname)
@@ -58,31 +61,47 @@ if scan_dockers or scan_docker_networks:
     start_scan = sidebar.button('Start Scan')
     process_count = sidebar.slider("Number of processes", 1, 10, 2, 1)
 
+dockers_to_scan = [docker_scan_options]
+print(dockers_to_scan)
+
 if start_scan:
     # To start the scan, setup process poll and output queue
     # Create process pool
-    process_pool = pool.Pool(process_count)
     output_q = multiprocessing.Manager().Queue()
     st.text('Starting scan ...')
 
-    st.write(docker_scan_plugins)
+    _containers = []
+    if dockers_to_scan == 'all' or dockers_to_scan[0] == 'all':
+        _containers = docker_client.containers.list()
+    else:
+        _containers.append(docker_client.containers.get(docker_scan_options))
+    print(_containers)
 
-    scanner_workers.docker_scan_worker(
-        containers=docker_scan_options,
-        plugins=docker_scan_plugins,
-        process_pool=process_pool,
-        output_queue=output_q
-    )
+    _plugins = []
 
-    process_pool.close()
-    process_pool.join()
+    if docker_scan_plugins is None or docker_scan_plugins == 'all' \
+            or docker_scan_plugins[0] == 'all':
+        for importer, modname, ispkg in pkgutil.iter_modules(
+                DockerENT.docker_plugins.__path__):
+            _plugins.append(modname)
+    else:
+        _plugins.append(plugins)
+    print(_plugins)
+
+    for container in _containers:
+        for plugin in _plugins:
+            scanner_workers.executor(
+                target=container.short_id,
+                plugin=plugin,
+                output_queue=output_q,
+                is_docker=True
+            )
 
     st.write(output_q)
     report = {}
 
     while not output_q.empty():
         result = output_q.get()
-        st.write(result)
         for key in result.keys():
             if key in report.keys():
                 report[key].append(result[key])
@@ -90,4 +109,5 @@ if start_scan:
                 report[key] = []
                 report[key].append(result[key])
 
-    output_worker.output_handler(queue=output_q, target='file')
+
+    st.write(report)
