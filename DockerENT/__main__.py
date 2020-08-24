@@ -7,6 +7,9 @@ from DockerENT import controller
 
 import logging.config
 import argparse
+import subprocess
+import os
+import sys
 
 # Setup config for this package
 logger_config = config_parser.config['logger']
@@ -16,6 +19,7 @@ logging.config.dictConfig(logger_config)
 parser = argparse.ArgumentParser(
     prog='Find the vulnerabilities hidden in your running container(s).'
 )
+
 docker_args_group = parser.add_argument_group()
 docker_args_group.add_argument(
     '-d',
@@ -49,6 +53,14 @@ docker_args_group.add_argument(
     help='Run scan with only specified plugins.')
 
 parser.add_argument(
+    '-w',
+    '--web-app',
+    dest='web_app',
+    action='store_true',
+    default=False
+)
+
+parser.add_argument(
     '-n',
     '--process',
     nargs='?',
@@ -57,6 +69,7 @@ parser.add_argument(
     type=int,
     help='Run scans in parallel.'
 )
+
 parser.add_argument(
     '-a',
     '--audit',
@@ -77,9 +90,11 @@ output_plugin.add_argument(
 )
 
 args = parser.parse_args()
+
 process_count = args.process_count
 output = args.output
 audit = args.audit
+webapp = args.web_app
 
 docker_containers = args.docker_container
 docker_plugins = args.docker_plugins
@@ -88,10 +103,16 @@ docker_nws = args.docker_network
 docker_nw_plugins = args.docker_nw_plugins
 
 # Start DockerENT
-controller.main(docker_containers=docker_containers,
-                docker_plugins=docker_plugins,
-                docker_nws=docker_nws,
-                docker_nw_plugins=docker_nw_plugins,
-                process_count=process_count,
-                audit=audit,
-                output=output)
+# If webapp, start Streamlit else cli application.
+if webapp:
+    sys.path.append(os.path.abspath(os.path.join('..')))
+    web_app_cmd = "streamlit run web_app.py"
+    subprocess.run(web_app_cmd.split(" "), stdout=subprocess.PIPE)
+else:
+    controller.main(docker_containers=docker_containers,
+                    docker_plugins=docker_plugins,
+                    docker_nws=docker_nws,
+                    docker_nw_plugins=docker_nw_plugins,
+                    process_count=process_count,
+                    audit=audit,
+                    output=output)
