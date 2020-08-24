@@ -1,13 +1,13 @@
-"""Web App for DockerENT"""
+"""Web App for DockerENT."""
 from DockerENT import scanner_workers
-from docker.models import plugins
-import DockerENT.scanner_workers
+
+import base64
 import docker
+import DockerENT
+import json
 import multiprocessing
 import pkgutil
 import streamlit as ui
-import base64
-import json
 
 ui_sidebar = ui.sidebar
 
@@ -58,13 +58,17 @@ docker_scan_plugins = None
 
 
 class AutoUpdateProgressBar:
+    """Progress bar autoupdate class."""
+
     def __init__(self, iterable, progress_bar):
+        """Class method."""
         self.prog_bar = progress_bar
         self.iterable = iterable
         self.length = len(iterable)
         self.i = 0
 
     def __iter__(self):
+        """Run on each iteration."""
         for obj in self.iterable:
             yield obj
             self.i += 1
@@ -73,6 +77,7 @@ class AutoUpdateProgressBar:
 
 
 def render_sidebar():
+    """Render UI Sidebar."""
     global docker_scan_list
     global docker_scan_plugins
 
@@ -101,10 +106,12 @@ def render_sidebar():
 
 
 def render_ui():
+    """Render UI panel."""
     pass
 
 
 def scan_dockers():
+    """Run DockerENT application on Dockers."""
     global docker_scan_list
     global docker_scan_plugins
 
@@ -169,10 +176,12 @@ def scan_dockers():
 
 
 def scan_docker_networks():
+    """Run DockerENT application on Dockers NWs."""
     pass
 
 
 def main():
+    """Start the UI Application."""
     render_sidebar()
     render_ui()
 

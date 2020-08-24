@@ -4,7 +4,6 @@ from DockerENT import output_worker
 from DockerENT import scanner_workers
 from multiprocessing import pool
 
-import argparse
 import logging
 import multiprocessing
 

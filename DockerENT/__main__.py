@@ -5,12 +5,12 @@ Script will load any config file and make it available to application.
 from DockerENT import config_parser
 from DockerENT import controller
 
-import logging.config
 import argparse
-import subprocess
+import logging.config
 import os
-import sys
 import signal
+import subprocess
+import sys
 
 # Setup config for this package
 logger_config = config_parser.config['logger']
@@ -111,6 +111,7 @@ docker_nw_plugins = args.docker_nw_plugins
 
 # Register Signal Handler for graceful exit in case of Web application
 def sigterm_handler(_signo, _stack_frame):
+    """Signal handler."""
     _log.info("Thanks for using DockerENT")
     sys.exit(0)
 
