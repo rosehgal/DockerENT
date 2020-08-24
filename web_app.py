@@ -29,7 +29,7 @@ docker_list.insert(0, 'all')
 docker_nw_list = docker_client.networks.list()
 docker_nw_list.insert(0, 'all')
 
-# --------------------------- SIDEBAR START --------------------------------
+# --------------------------- SIDEBAR START -----------------------------------
 # Initialise all UI Sidebar widgets
 # Order is preserved in UI
 ui_sidebar.text('Select options to start DockerENT')
@@ -42,14 +42,14 @@ docker_plugins_list_dropdown = None
 docker_nw_list_dropdown = None
 docker_nw_plugin_list_dropdown = None
 ui_sidebar_start_docker_scan = None
-# --------------------------- SIDEBAR END ----------------------------------
+# --------------------------- SIDEBAR END -------------------------------------
 
 
-# --------------------------- UI START -------------------------------------
+# --------------------------- UI START ----------------------------------------
 # Initialise all UI widgets
 # Order is preserved in UI
 ui_progress_bar = None
-# --------------------------- UI END ---------------------------------------
+# --------------------------- UI END ------------------------------------------
 
 
 # Global UI result variables
@@ -137,7 +137,8 @@ def scan_dockers():
             target_plugin.append((container, plugin))
 
     with ui.spinner('Scanning dockers ..'):
-        for i in AutoUpdateProgressBar(range(len(target_plugin)), docker_scan_progress_bar):
+        for i in AutoUpdateProgressBar(range(len(target_plugin)),
+                                       docker_scan_progress_bar):
             scanner_workers.executor(
                 target=target_plugin[i][0].short_id,
                 plugin=target_plugin[i][1],
@@ -157,7 +158,9 @@ def scan_dockers():
                 report[key].append(result[key])
 
     b64report = base64.b64encode(json.dumps(report).encode())
-    href = f'<a href="data:text/json;base64,{b64report.decode("utf-8")}" download="report.json">Download JSON report</a>'
+    href = f'<a href="data:text/json;base64,{b64report.decode("utf-8")}"'
+    ' download="report.json">Download JSON report</a>'
+
     ui.markdown(
         href,
         unsafe_allow_html=True

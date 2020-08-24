@@ -10,10 +10,13 @@ import argparse
 import subprocess
 import os
 import sys
+import signal
 
 # Setup config for this package
 logger_config = config_parser.config['logger']
 logging.config.dictConfig(logger_config)
+
+_log = logging.getLogger(__name__)
 
 # Read arguments for DockerENT application
 parser = argparse.ArgumentParser(
@@ -102,12 +105,27 @@ docker_plugins = args.docker_plugins
 docker_nws = args.docker_network
 docker_nw_plugins = args.docker_nw_plugins
 
+
+# Register Signal Handler for graceful exit in case of Web application
+def sigterm_handler(_signo, _stack_frame):
+    _log.info("Thanks for using DockerENT")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, sigterm_handler)
+
+
 # Start DockerENT
 # If webapp, start Streamlit else cli application.
 if webapp:
+    _log.info('Starting web application ...')
+
     sys.path.append(os.path.abspath(os.path.join('..')))
     web_app_cmd = "streamlit run web_app.py"
-    subprocess.run(web_app_cmd.split(" "), stdout=subprocess.PIPE)
+
+    with subprocess.Popen(web_app_cmd.split(" ")) as web_process:
+        _log.info(web_process.stdout.read())
+
 else:
     controller.main(docker_containers=docker_containers,
                     docker_plugins=docker_plugins,
