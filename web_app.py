@@ -174,6 +174,7 @@ def scan_docker_networks():
 
 def main():
     render_sidebar()
+    render_ui()
 
 
 main()
