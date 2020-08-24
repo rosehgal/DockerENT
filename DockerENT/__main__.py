@@ -60,7 +60,9 @@ parser.add_argument(
     '--web-app',
     dest='web_app',
     action='store_true',
-    default=False
+    default=False,
+    help='Run DockerENT in WebApp mode. '
+    'If this parameter is enabled, other command line flags will be ignored.'
 )
 
 parser.add_argument(
@@ -70,7 +72,7 @@ parser.add_argument(
     dest='process_count',
     default=2,
     type=int,
-    help='Run scans in parallel.'
+    help='Run scans in parallel (Process pool count).'
 )
 
 parser.add_argument(
@@ -78,7 +80,8 @@ parser.add_argument(
     '--audit',
     dest='audit',
     action='store_true',
-    default=False
+    default=False,
+    help='Flag to check weather to audit results or not.'
 )
 
 output_plugin = parser.add_argument_group()
@@ -89,7 +92,7 @@ output_plugin.add_argument(
     dest='output',
     default='file',
     type=str,
-    help='Output plugin to write data to'
+    help='Output plugin to write data to.'
 )
 
 args = parser.parse_args()
