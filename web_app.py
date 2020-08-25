@@ -111,6 +111,22 @@ def render_ui():
 
 
 @ui.cache
+class Executor:
+    def docker_scan_executor(self,
+                             target,
+                             plugin,
+                             output_queue):
+        scanner_workers.executor(
+            target=target,
+            plugin=plugin,
+            output_queue=output_queue,
+            is_docker=True
+        )
+
+
+executor = Executor()
+
+
 def scan_dockers():
     """Run DockerENT application on Dockers."""
     global docker_scan_list
@@ -120,7 +136,7 @@ def scan_dockers():
     output_q = multiprocessing.Manager().Queue()
 
     _containers = []
-    if docker_scan_list == 'all' or docker_scan_list[0] == 'all':
+    if docker_scan_list == 'all' or 'all' in docker_scan_list:
         _containers = docker_client.containers.list()
     else:
         for c in docker_scan_list:
@@ -128,7 +144,7 @@ def scan_dockers():
 
     _plugins = []
 
-    if docker_scan_plugins is None or docker_scan_plugins == 'all' \
+    if docker_scan_plugins is None or 'all' in docker_scan_plugins \
             or docker_scan_plugins[0] == 'all':
         for importer, modname, ispkg in pkgutil.iter_modules(
                 DockerENT.docker_plugins.__path__):
@@ -147,11 +163,10 @@ def scan_dockers():
     with ui.spinner('Scanning dockers ..'):
         for i in AutoUpdateProgressBar(range(len(target_plugin)),
                                        docker_scan_progress_bar):
-            scanner_workers.executor(
+            executor.docker_scan_executor(
                 target=target_plugin[i][0].short_id,
                 plugin=target_plugin[i][1],
-                output_queue=output_q,
-                is_docker=True
+                output_queue=output_q
             )
     ui.success('Scan Complete')
 
