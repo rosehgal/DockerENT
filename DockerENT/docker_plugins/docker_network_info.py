@@ -35,7 +35,7 @@ def scan(container, output_queue):
     docker_inspect_output = api_client.inspect_container(container.short_id)
 
     netinfo = {
-        "netinfo": {
+        "NETINFO": {
             "isDockerInspectAttribute": False,
             "cmd": "/sbin/ifconfig -a",
             "msg": "Interfaces",

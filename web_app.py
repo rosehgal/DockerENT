@@ -110,6 +110,7 @@ def render_ui():
     pass
 
 
+@ui.cache
 def scan_dockers():
     """Run DockerENT application on Dockers."""
     global docker_scan_list
@@ -165,8 +166,9 @@ def scan_dockers():
                 report[key].append(result[key])
 
     b64report = base64.b64encode(json.dumps(report).encode())
-    href = f'<a href="data:text/json;base64,{b64report.decode("utf-8")}"'
-    ' download="report.json">Download JSON report</a>'
+    href = f"""
+    <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+    download="report.json">Download JSON report</a>"""
 
     ui.markdown(
         href,

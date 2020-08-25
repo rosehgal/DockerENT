@@ -82,6 +82,8 @@ def scan(container, output_queue):
         else:
             security_options[option]['results'].append(option_result)
 
+        del security_options[option]['output_identifier']
+
     res[container.short_id] = {
         _plugin_name_: security_options
     }

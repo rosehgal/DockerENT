@@ -30,8 +30,8 @@ def scan(container, output_queue):
 
     }
     result = {
-        'test_performed': {
-            'results': ['good']
+        'test_class': {
+            'TEST_NAME': ['good']
         }
     }
 
