@@ -1,5 +1,6 @@
 """Web App for DockerENT."""
 from DockerENT import scanner_workers
+from DockerENT import audit_workers
 
 import base64
 import docker
@@ -175,21 +176,23 @@ def scan_dockers():
         result = output_q.get()
         for key in result.keys():
             if key in report.keys():
-                report[key].append(result[key])
+                report[key].update(result[key])
             else:
-                report[key] = []
-                report[key].append(result[key])
+                report[key] = {}
+                report[key].update(result[key])
 
     b64report = base64.b64encode(json.dumps(report).encode())
     href = f"""
     <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
-    download="report.json">Download JSON report</a>"""
+    download="report.json">Download RAW JSON report</a>"""
 
     ui.markdown(
         href,
         unsafe_allow_html=True
     )
     ui.json(report)
+
+    ui.json(audit_workers.audit(report))
 
 
 def scan_docker_networks():
