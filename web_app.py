@@ -116,12 +116,15 @@ class Executor:
     def docker_scan_executor(self,
                              target,
                              plugin,
-                             output_queue):
+                             output_queue,
+                             audit_queue):
         scanner_workers.executor(
             target=target,
             plugin=plugin,
             output_queue=output_queue,
-            is_docker=True
+            is_docker=True,
+            audit=True,
+            audit_queue=audit_queue
         )
 
 
@@ -135,6 +138,7 @@ def scan_dockers():
 
     # Create a Q to handle report from each plugin
     output_q = multiprocessing.Manager().Queue()
+    audit_q = multiprocessing.Manager().Queue()
 
     _containers = []
     if docker_scan_list == 'all' or 'all' in docker_scan_list:
@@ -167,7 +171,8 @@ def scan_dockers():
             executor.docker_scan_executor(
                 target=target_plugin[i][0].short_id,
                 plugin=target_plugin[i][1],
-                output_queue=output_q
+                output_queue=output_q,
+                audit_queue=audit_q
             )
     ui.success('Scan Complete')
 
@@ -192,7 +197,18 @@ def scan_dockers():
     )
     ui.json(report)
 
-    ui.json(audit_workers.audit(report))
+    audit_report = {}
+    while not audit_q.empty():
+        result = audit_q.get()
+        print(result)
+
+        for key in result.keys():
+            if not key in audit_report.keys():
+                audit_report[key] = []
+
+            audit_report[key].extend(result[key])
+
+    ui.json(audit_report)
 
 
 def scan_docker_networks():

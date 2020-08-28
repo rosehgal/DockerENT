@@ -6,7 +6,7 @@ _log = logging.getLogger(__name__)
 _plugin_name_ = 'sample_plugin'
 
 
-def scan(container, output_queue):
+def scan(container, output_queue, audit=False, audit_queue=None):
     """Sample docker scan plugin.
 
     :param container: container instance.

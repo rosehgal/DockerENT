@@ -9,7 +9,7 @@ _log = logging.getLogger(__name__)
 _plugin_name_ = 'file-system-info'
 
 
-def scan(container, output_queue):
+def scan(container, output_queue, audit=False, audit_queue=None):
     """Docker file-system-info plugin scan.
 
     :param container: container instance.

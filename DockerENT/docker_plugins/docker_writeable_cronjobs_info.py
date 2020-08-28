@@ -6,7 +6,7 @@ _log = logging.getLogger(__name__)
 _plugin_name_ = 'cron-info'
 
 
-def scan(container, output_queue):
+def scan(container, output_queue, audit=False, audit_queue=None):
     """Docker cron-jobs scan plugin.
 
     :param container: container instance.
