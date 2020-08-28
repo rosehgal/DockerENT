@@ -17,7 +17,12 @@ _log = logging.getLogger(__name__)
 docker_client = docker.from_env()
 
 
-def executor(target, plugin, output_queue, is_docker=False):
+def executor(target,
+             plugin,
+             output_queue,
+             is_docker=False,
+             audit=False,
+             audit_queue=None):
     """Execute a plugin on the target.
 
     Target is either a docker.models.containers.Container or
@@ -50,7 +55,7 @@ def executor(target, plugin, output_queue, is_docker=False):
         target = docker_client.networks.get(target)
 
     module = importlib.import_module(package + '.' + plugin)
-    module.scan(target, output_queue)
+    module.scan(target, output_queue, audit, audit_queue)
 
 
 def docker_scan_worker(containers, plugins, process_pool, output_queue):

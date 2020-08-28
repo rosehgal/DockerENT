@@ -9,7 +9,7 @@ _log = logging.getLogger(__name__)
 _plugin_name_ = 'security-profiles'
 
 
-def scan(container, output_queue):
+def scan(container, output_queue, audit=False, audit_queue=None):
     """Docker security profiles scan plugin.
 
     This plugin inspect the AppArmor and SELinux profile for running
@@ -90,3 +90,34 @@ def scan(container, output_queue):
 
     _log.info('Completed execution of {} Plugin.'.format(_plugin_name_))
     output_queue.put(res)
+
+    if audit:
+        # Perform Audit for this result
+        _audit(container, security_options, audit_queue)
+
+
+def _audit(container, scan_report, audit_queue):
+    """Perform Scan audit
+
+    :param scan_report: dict
+    :param audit_queue: Multiprocessing queue to perform Audit.
+    """
+    container_id = container.short_id
+    audit_report = {}
+    audit_report[container_id] = []
+
+    weak_configurations = ['', None, '<no value>', 'unconfined']
+    for security_option in scan_report.keys():
+        actual_results = scan_report[security_option]['results']
+
+        if [] in actual_results:
+            actual_results.remove([])
+            actual_results.append(None)
+
+        if (set(actual_results) & set(weak_configurations)) != set():
+            # Weak configuration detected
+            audit_report[container_id].append(
+                'Weak '+security_option
+            )
+
+    audit_queue.put(audit_report)
