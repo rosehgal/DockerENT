@@ -22,5 +22,6 @@ def get_value_from_str_dotted_key(d, dotted_key):
 
 
 def list_intersection(lst1, lst2):
+    """List intersection."""
     lst3 = [value for value in lst1 if value in lst2]
     return lst3

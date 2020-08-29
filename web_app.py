@@ -26,7 +26,10 @@ docker_list = [docker_name.short_id for docker_name in docker_list]
 docker_list.insert(0, 'all')
 
 # Get the list of all docker-nw for sidebar drop down
+
 docker_nw_list = docker_client.networks.list()
+docker_nw_list = [docker_nw_name.short_id for docker_nw_name in docker_nw_list]
+docker_nw_list.sort()
 docker_nw_list.insert(0, 'all')
 
 # --------------------------- SIDEBAR START -----------------------------------
@@ -34,7 +37,7 @@ docker_nw_list.insert(0, 'all')
 # Order is preserved in UI
 ui_sidebar.text('Select options to start DockerENT')
 scan_dockers_checkbox = ui_sidebar.checkbox('Scan dockers')
-scan_docker_networks_checkbox = ui_sidebar.checkbox('Scan docker networks')
+scan_docker_nw_checkbox = ui_sidebar.checkbox('Scan docker networks')
 
 # Placeholders
 docker_list_dropdown = None
@@ -55,6 +58,11 @@ ui_progress_bar = None
 # Global UI result variables
 docker_scan_list = None
 docker_scan_plugins = None
+docker_scan_audit = None
+
+docker_nw_scan_list = None
+docker_nw_scan_plugins = None
+docker_nw_scan_audit = None
 
 
 class AutoUpdateProgressBar:
@@ -80,11 +88,17 @@ def render_sidebar():
     """Render UI Sidebar."""
     global docker_scan_list
     global docker_scan_plugins
+    global docker_scan_audit
 
+    global docker_nw_scan_list
+    global docker_nw_scan_plugins
+    global docker_nw_scan_audit
+
+    # Docker UI Sidebar
     if scan_dockers_checkbox:
         docker_scan_list = ui_sidebar.multiselect(
-            label='Pick a single docker or all to start.',
-            options=docker_list
+            'Pick a single docker or all to start.',
+            docker_list
         )
 
         _plugins = ['all']
@@ -97,12 +111,40 @@ def render_sidebar():
             _plugins
         )
 
+        docker_scan_audit = ui_sidebar.checkbox('Audit Docker Results')
+
         ui_sidebar_docker_start_scan = ui_sidebar.button(
             'Start docker scan'
         )
 
         if ui_sidebar_docker_start_scan:
             scan_dockers()
+
+    # Docker Network UI Sidebar
+    if scan_docker_nw_checkbox:
+        docker_nw_scan_list = ui_sidebar.multiselect(
+            'Pick Docker network to scan.',
+            docker_nw_list
+        )
+
+        _plugins = ['all']
+        for importer, modname, ispkg in pkgutil.iter_modules(
+                DockerENT.docker_nw_plugins.__path__):
+            _plugins.append(modname)
+
+        docker_nw_scan_plugins = ui_sidebar.multiselect(
+            'Select the list of plugins to execute',
+            _plugins
+        )
+
+        docker_nw_scan_audit = ui_sidebar.checkbox('Audit Docker n/w Results')
+
+        ui_sidebar_docker_nw_start_scan = ui_sidebar.button(
+            'Start docker n/w scan'
+        )
+
+        if ui_sidebar_docker_nw_start_scan:
+            scan_docker_networks()
 
 
 def render_ui():
@@ -123,6 +165,19 @@ class Executor:
             output_queue=output_queue,
             is_docker=True,
             audit=True,
+            audit_queue=audit_queue
+        )
+
+    def docker_nw_scan_executor(self,
+                                target,
+                                plugin,
+                                output_queue,
+                                audit_queue):
+        scanner_workers.executor(
+            target=target,
+            plugin=plugin,
+            output_queue=output_queue,
+            is_docker=False,
             audit_queue=audit_queue
         )
 
@@ -196,21 +251,100 @@ def scan_dockers():
     )
     ui.json(report)
 
-    audit_report = {}
-    while not audit_q.empty():
-        result = audit_q.get()
+    if docker_scan_audit:
+        audit_report = {}
+        while not audit_q.empty():
+            result = audit_q.get()
 
-        for key in result.keys():
-            if not key in audit_report.keys():
-                audit_report[key] = []
+            for key in result.keys():
+                if not key in audit_report.keys():
+                    audit_report[key] = []
 
-            audit_report[key].extend(result[key])
+                audit_report[key].extend(result[key])
 
-    ui.json(audit_report)
+        ui.json(audit_report)
 
 
 def scan_docker_networks():
     """Run DockerENT application on Dockers NWs."""
+    ui.write('Docker Network scan')
+    """Run DockerENT application on Dockers."""
+    global docker_nw_scan_list
+    global docker_nw_scan_plugins
+
+    # Create a Q to handle report from each plugin
+    output_q = multiprocessing.Manager().Queue()
+    audit_q = multiprocessing.Manager().Queue()
+
+    _containers = []
+    if docker_nw_scan_list == 'all' or 'all' in docker_nw_scan_list:
+        _containers = docker_client.networks.list()
+    else:
+        for c in docker_nw_scan_list:
+            _containers.append(docker_client.networks.get(c))
+
+    _plugins = []
+
+    if docker_nw_scan_plugins is None or 'all' in docker_nw_scan_plugins \
+            or docker_nw_scan_plugins[0] == 'all':
+        for importer, modname, ispkg in pkgutil.iter_modules(
+                DockerENT.docker_nw_plugins.__path__):
+            _plugins.append(modname)
+    else:
+        _plugins = docker_nw_scan_plugins
+
+    docker_nw_scan_progress_bar = ui.progress(0)
+    # List of Tuples(target, plugin)to hold target to plugin combinations
+    target_plugin = []
+
+    for container in _containers:
+        for plugin in _plugins:
+            target_plugin.append((container, plugin))
+
+    with ui.spinner('Scanning docker_nws ..'):
+        for i in AutoUpdateProgressBar(range(len(target_plugin)),
+                                       docker_nw_scan_progress_bar):
+            executor.docker_nw_scan_executor(
+                target=target_plugin[i][0].short_id,
+                plugin=target_plugin[i][1],
+                output_queue=output_q,
+                audit_queue=audit_q
+            )
+    ui.success('Scan Complete')
+
+    report = {}
+    while not output_q.empty():
+        result = output_q.get()
+        for key in result.keys():
+            if key in report.keys():
+                report[key].update(result[key])
+            else:
+                report[key] = {}
+                report[key].update(result[key])
+
+    b64report = base64.b64encode(json.dumps(report).encode())
+    href = f"""
+    <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+    download="report.json">Download RAW JSON report</a>"""
+
+    ui.markdown(
+        href,
+        unsafe_allow_html=True
+    )
+    ui.json(report)
+
+    if docker_nw_scan_audit:
+        audit_report = {}
+        while not audit_q.empty():
+            result = audit_q.get()
+
+            for key in result.keys():
+                if not key in audit_report.keys():
+                    audit_report[key] = []
+
+                audit_report[key].extend(result[key])
+
+        ui.json(audit_report)
     pass
 
 
