@@ -1,5 +1,4 @@
 """The controller module, the main method of this module starts DockerENT."""
-from DockerENT import audit_workers
 from DockerENT import output_worker
 from DockerENT import scanner_workers
 from multiprocessing import pool
@@ -50,8 +49,6 @@ def main(docker_containers,
     process_pool.close()
     process_pool.join()
 
-    if audit:
-        audit_workers.audit(output_q, audit_output_q)
-        output_worker.output_handler(queue=audit_output_q, target=output)
-
-    output_worker.output_handler(queue=output_q, target=output)
+    output_worker.output_handler(
+        queue=output_q,
+        target=output)

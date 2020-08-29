@@ -76,9 +76,10 @@ def scan(container, output_queue, audit=False, audit_queue=None):
             docker_inspect_output,
             security_options[option]['output_identifier']
         )
-
-        if type(option_result) == type(list):
-            security_options[option]['results'].extend(option_result)
+        if isinstance(option_result, list):
+            security_options[option]['results'] = option_result
+        elif type(option_result) == type(None):
+            security_options[option]['results'] = [None]
         else:
             security_options[option]['results'].append(option_result)
 
@@ -106,18 +107,54 @@ def _audit(container, scan_report, audit_queue):
     audit_report = {}
     audit_report[container_id] = []
 
-    weak_configurations = ['', None, '<no value>', 'unconfined']
+    columns = [_plugin_name_, 'WARN']
+
+    weak_configurations = {
+        'AppArmor_Profile': {
+            'weak_conf': ['', None, '<no value>', 'unconfined'],
+            'warn_msg': 'No AppArmorProfile Found'
+        },
+        'SELinux': {
+            'weak_conf': ['', None, '<no value>', 'unconfined', 'label=disable'],
+            'warn_msg': 'SELinux disabled'
+        },
+        'CapAdd': {
+            'safe_conf': [],
+            'warn_msg': 'Capabilities Present: '
+        },
+        'Privileged': {
+            'weak_conf': ['true', 'TRUE', True],
+            'warn_msg': 'Container is Privileged'
+        }
+    }
+
     for security_option in scan_report.keys():
-        actual_results = scan_report[security_option]['results']
+        if security_option in weak_configurations.keys():
+            actual_results = scan_report[security_option]['results']
+            weak_results = None
+            safe_results = None
 
-        if [] in actual_results:
-            actual_results.remove([])
-            actual_results.append(None)
+            if 'weak_conf' in weak_configurations[security_option].keys():
+                weak_results = weak_configurations[security_option]['weak_conf']
 
-        if (set(actual_results) & set(weak_configurations)) != set():
-            # Weak configuration detected
-            audit_report[container_id].append(
-                'Weak '+security_option
-            )
+            if 'safe_conf' in weak_configurations[security_option].keys():
+                safe_results = weak_configurations[security_option]['safe_conf']
+
+            warn_message = weak_configurations[security_option]['warn_msg']
+
+            # If safe_conf, check on safe_conf else check on weak_conf
+            if safe_results is not None:
+                if actual_results != safe_results:
+                    _r = [res for res in actual_results if res]
+                    if _r:
+                        r = columns + [warn_message + ";".join(_r)]
+                        audit_report[container_id].append(", ".join(r))
+            else:
+                if utils.list_intersection(actual_results, weak_results) != []:
+                    # Weak configuration detected
+                    r = columns + [warn_message]
+                    audit_report[container_id].append(
+                        ", ".join(r)
+                    )
 
     audit_queue.put(audit_report)

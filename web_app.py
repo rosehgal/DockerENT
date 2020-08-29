@@ -1,6 +1,5 @@
 """Web App for DockerENT."""
 from DockerENT import scanner_workers
-from DockerENT import audit_workers
 
 import base64
 import docker
@@ -200,7 +199,6 @@ def scan_dockers():
     audit_report = {}
     while not audit_q.empty():
         result = audit_q.get()
-        print(result)
 
         for key in result.keys():
             if not key in audit_report.keys():
