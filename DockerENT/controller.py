@@ -28,7 +28,6 @@ def main(docker_containers,
 
     process_pool = pool.Pool(process_count)
     output_q = multiprocessing.Manager().Queue()
-    audit_output_q = multiprocessing.Manager().Queue()
 
     if docker_containers is not None:
         scanner_workers.docker_scan_worker(

@@ -78,7 +78,7 @@ def scan(container, output_queue, audit=False, audit_queue=None):
         )
         if isinstance(option_result, list):
             security_options[option]['results'] = option_result
-        elif type(option_result) == type(None):
+        elif isinstance(option_result, None):
             security_options[option]['results'] = [None]
         else:
             security_options[option]['results'].append(option_result)
@@ -98,7 +98,7 @@ def scan(container, output_queue, audit=False, audit_queue=None):
 
 
 def _audit(container, scan_report, audit_queue):
-    """Perform Scan audit
+    """Perform Scan audit.
 
     :param scan_report: dict
     :param audit_queue: Multiprocessing queue to perform Audit.
@@ -115,7 +115,8 @@ def _audit(container, scan_report, audit_queue):
             'warn_msg': 'No AppArmorProfile Found'
         },
         'SELinux': {
-            'weak_conf': ['', None, '<no value>', 'unconfined', 'label=disable'],
+            'weak_conf': ['', None, '<no value>', 'unconfined',
+                          'label=disable'],
             'warn_msg': 'SELinux disabled'
         },
         'CapAdd': {
