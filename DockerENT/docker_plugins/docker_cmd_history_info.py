@@ -190,7 +190,6 @@ def _audit(container, scan_report, audit_queue):
     for security_option in scan_report.keys():
         if security_option in weak_configurations.keys():
             actual_results = scan_report[security_option]['results']
-            print(actual_results)
             weak_results = None
             safe_results = None
 

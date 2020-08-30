@@ -78,7 +78,7 @@ def scan(container, output_queue, audit=False, audit_queue=None):
         )
         if isinstance(option_result, list):
             security_options[option]['results'] = option_result
-        elif isinstance(option_result, None):
+        elif option_result is None:
             security_options[option]['results'] = [None]
         else:
             security_options[option]['results'].append(option_result)
