@@ -44,7 +44,7 @@ docker_list_dropdown = None
 docker_plugins_list_dropdown = None
 docker_nw_list_dropdown = None
 docker_nw_plugin_list_dropdown = None
-ui_sidebar_start_docker_scan = None
+ui_sidebar_start_dockerent = None
 # --------------------------- SIDEBAR END -------------------------------------
 
 
@@ -94,6 +94,8 @@ def render_sidebar():
     global docker_nw_scan_plugins
     global docker_nw_scan_audit
 
+    global ui_sidebar_start_dockerent
+
     # Docker UI Sidebar
     if scan_dockers_checkbox:
         docker_scan_list = ui_sidebar.multiselect(
@@ -113,13 +115,6 @@ def render_sidebar():
 
         docker_scan_audit = ui_sidebar.checkbox('Audit Docker Results')
 
-        ui_sidebar_docker_start_scan = ui_sidebar.button(
-            'Start docker scan'
-        )
-
-        if ui_sidebar_docker_start_scan:
-            scan_dockers()
-
     # Docker Network UI Sidebar
     if scan_docker_nw_checkbox:
         docker_nw_scan_list = ui_sidebar.multiselect(
@@ -137,14 +132,27 @@ def render_sidebar():
             _plugins
         )
 
-        docker_nw_scan_audit = ui_sidebar.checkbox('Audit Docker n/w Results')
+        docker_scan_audit = ui_sidebar.checkbox('Audit Docker N/W Results')
 
-        ui_sidebar_docker_nw_start_scan = ui_sidebar.button(
-            'Start docker n/w scan'
-        )
-
-        if ui_sidebar_docker_nw_start_scan:
+        if ui_sidebar_start_dockerent:
             scan_docker_networks()
+
+    if scan_docker_nw_checkbox or scan_dockers_checkbox:
+        ui_sidebar_start_dockerent = ui_sidebar.button('Start')
+
+    if ui_sidebar_start_dockerent:
+        if scan_dockers_checkbox:
+            if docker_scan_list:
+                scan_dockers()
+            else:
+                raise Exception('Please select one or more docker instance.')
+        if scan_docker_nw_checkbox:
+            if scan_docker_nw_checkbox:
+                if docker_nw_scan_list:
+                    scan_docker_networks()
+                else:
+                    raise Exception(
+                        'Please select one or more Docker Networks')
 
 
 def render_ui():
@@ -190,6 +198,11 @@ def scan_dockers():
     global docker_scan_list
     global docker_scan_plugins
 
+    ui.markdown(
+        """
+        ### Docker Scan Section.
+        """
+    )
     # Create a Q to handle report from each plugin
     output_q = multiprocessing.Manager().Queue()
     audit_q = multiprocessing.Manager().Queue()
@@ -202,6 +215,9 @@ def scan_dockers():
             _containers.append(docker_client.containers.get(c))
 
     _plugins = []
+
+    if not docker_scan_plugins:
+        docker_scan_plugins = ['all']
 
     if docker_scan_plugins is None or 'all' in docker_scan_plugins \
             or docker_scan_plugins[0] == 'all':
@@ -219,7 +235,7 @@ def scan_dockers():
         for plugin in _plugins:
             target_plugin.append((container, plugin))
 
-    with ui.spinner('Scanning dockers ..'):
+    with ui.spinner('**Scanning** dockers ..'):
         for i in AutoUpdateProgressBar(range(len(target_plugin)),
                                        docker_scan_progress_bar):
             executor.docker_scan_executor(
@@ -228,8 +244,9 @@ def scan_dockers():
                 output_queue=output_q,
                 audit_queue=audit_q
             )
-    ui.success('Scan Complete')
+    ui.success('**Docker Scan** Complete')
 
+    ui.info('**Docker Scan Summary**')
     report = {}
     while not output_q.empty():
         result = output_q.get()
@@ -252,6 +269,8 @@ def scan_dockers():
     ui.json(report)
 
     if docker_scan_audit:
+        ui.info('Docker Scan Audit Summary')
+
         audit_report = {}
         while not audit_q.empty():
             result = audit_q.get()
@@ -262,15 +281,28 @@ def scan_dockers():
 
                 audit_report[key].extend(result[key])
 
+        b64report = base64.b64encode(json.dumps(audit_report).encode())
+        href = f"""
+        <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+        download="audit_report.json">Download Audit JSON report</a>"""
+
+        ui.markdown(
+            href,
+            unsafe_allow_html=True
+        )
         ui.json(audit_report)
 
 
 def scan_docker_networks():
     """Run DockerENT application on Dockers NWs."""
-    ui.write('Docker Network scan')
-    """Run DockerENT application on Dockers."""
     global docker_nw_scan_list
     global docker_nw_scan_plugins
+
+    ui.markdown(
+        """
+        ### Docker Network Scan Section.
+        """
+    )
 
     # Create a Q to handle report from each plugin
     output_q = multiprocessing.Manager().Queue()
@@ -284,6 +316,9 @@ def scan_docker_networks():
             _containers.append(docker_client.networks.get(c))
 
     _plugins = []
+
+    if not docker_nw_scan_plugins:
+        docker_nw_scan_plugins = ['all']
 
     if docker_nw_scan_plugins is None or 'all' in docker_nw_scan_plugins \
             or docker_nw_scan_plugins[0] == 'all':
@@ -301,7 +336,7 @@ def scan_docker_networks():
         for plugin in _plugins:
             target_plugin.append((container, plugin))
 
-    with ui.spinner('Scanning docker_nws ..'):
+    with ui.spinner('Scanning docker networks ..'):
         for i in AutoUpdateProgressBar(range(len(target_plugin)),
                                        docker_nw_scan_progress_bar):
             executor.docker_nw_scan_executor(
@@ -310,7 +345,7 @@ def scan_docker_networks():
                 output_queue=output_q,
                 audit_queue=audit_q
             )
-    ui.success('Scan Complete')
+    ui.success('Docker Networks Scan Complete')
 
     report = {}
     while not output_q.empty():
@@ -354,4 +389,7 @@ def main():
     render_ui()
 
 
-main()
+try:
+    main()
+except Exception as e:
+    ui.error(str(e))
