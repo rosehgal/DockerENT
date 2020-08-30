@@ -1,4 +1,5 @@
 """Docker plaintext password in configs scan plugin."""
+from DockerENT import utils
 import logging
 
 _log = logging.getLogger(__name__)
@@ -66,7 +67,6 @@ def scan(container, output_queue, audit=False, audit_queue=None):
             "msg": "Check Shadow file",
             "results": []
         }
-
     }
 
     command_list = list(files.keys())
@@ -96,3 +96,92 @@ def scan(container, output_queue, audit=False, audit_queue=None):
 
     _log.info('Completed execution of {} Plugin.'.format(_plugin_name_))
     output_queue.put(res)
+
+    if audit:
+        _audit(container, files, audit_queue)
+
+
+def _audit(container, scan_report, audit_queue):
+    """Perform Scan audit.
+
+    :param scan_report: dict
+    :param audit_queue: Multiprocessing queue to perform Audit.
+    """
+    container_id = container.short_id
+    audit_report = {}
+    audit_report[container_id] = []
+
+    columns = [_plugin_name_, 'WARN']
+
+    weak_configurations = {
+        "LOG_FILES": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in LOG files: '
+        },
+        "CONFIG_FILES": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in CONFIG files: '
+        },
+        "YML_FILES": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in YML files: '
+        },
+        "YAML_FILES": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in YAML files: '
+        },
+        "APP_PROPERTIES": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in PROP files: '
+        },
+        "SHADOW": {
+            'safe_conf': [],
+            'warn_msg': 'Password Identified in SHADOW files: '
+        }
+    }
+
+    for security_option in scan_report.keys():
+        if security_option in weak_configurations.keys():
+            actual_results = scan_report[security_option]['results']
+            weak_results = None
+            safe_results = None
+
+            if 'weak_conf' in weak_configurations[security_option].keys():
+                weak_results = weak_configurations[security_option]['weak_conf']
+
+            if 'safe_conf' in weak_configurations[security_option].keys():
+                safe_results = weak_configurations[security_option]['safe_conf']
+
+            warn_message = weak_configurations[security_option]['warn_msg']
+
+            # If safe_conf, check on safe_conf else check on weak_conf
+            if safe_results is not None:
+                if actual_results != safe_results:
+                    if security_option == 'SHADOW':
+                        plain_text_creds = []
+
+                        for ar in actual_results:
+                            result_list = ar.split(':')
+                            if len(result_list) > 1 and (
+                                    result_list[1] != '!' and result_list[1] != '*'):
+                                plain_text_creds.append(ar)
+
+                        if plain_text_creds:
+                            r = columns + [warn_message + ";".join(
+                                plain_text_creds
+                            )]
+                            audit_report[container_id].append(", ".join(r))
+                    else:
+                        _r = [res for res in actual_results if res]
+                        if _r:
+                            r = columns + [warn_message + ";".join(_r)]
+                            audit_report[container_id].append(", ".join(r))
+            else:
+                if utils.list_intersection(actual_results, weak_results) != []:
+                    # Weak configuration detected
+                    r = columns + [warn_message]
+                    audit_report[container_id].append(
+                        ", ".join(r)
+                    )
+
+    audit_queue.put(audit_report)
