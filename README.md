@@ -162,5 +162,6 @@ def _audit(container, results, audit_queue):
 - Rely on third party lib [StreamLit](https://www.streamlit.io/), all issues with framework are inherent.
 
 
-
-
+#### Help Make this tool better
+- Create a PR, Issues are more than welcome.
+- Try it, test it and enhance it.
