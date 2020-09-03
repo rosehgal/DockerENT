@@ -49,9 +49,9 @@ optional arguments:
 ```
 See this quick video to get started with.
 <p align="center">
-    <a href="https://asciinema.org/a/356932" target="_blank">
-        <img src="https://asciinema.org/a/356932.svg" />
-    </a>
+    <a href="https://asciinema.org/a/Zmtk8KjlbPr1vHa3efZiCIDs2" target="_blank">
+        <img src="https://asciinema.org/a/Zmtk8KjlbPr1vHa3efZiCIDs2.svg" />
+    </a> 
 </p>    
 
 ### Features
