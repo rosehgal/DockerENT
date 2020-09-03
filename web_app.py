@@ -1,5 +1,6 @@
 """Web App for DockerENT."""
 from DockerENT import scanner_workers
+from DockerENT.utils import utils
 
 import base64
 import docker
@@ -247,15 +248,7 @@ def scan_dockers():
     ui.success('**Docker Scan** Complete')
 
     ui.info('**Docker Scan Summary**')
-    report = {}
-    while not output_q.empty():
-        result = output_q.get()
-        for key in result.keys():
-            if key in report.keys():
-                report[key].update(result[key])
-            else:
-                report[key] = {}
-                report[key].update(result[key])
+    report = utils.parse_output_queue_2_dict(output_q)
 
     b64report = base64.b64encode(json.dumps(report).encode())
     href = f"""
@@ -271,15 +264,7 @@ def scan_dockers():
     if docker_scan_audit:
         ui.info('Docker Scan Audit Summary')
 
-        audit_report = {}
-        while not audit_q.empty():
-            result = audit_q.get()
-
-            for key in result.keys():
-                if not key in audit_report.keys():
-                    audit_report[key] = []
-
-                audit_report[key].extend(result[key])
+        audit_report = utils.parse_audit_queue_2_dict(audit_q)
 
         b64report = base64.b64encode(json.dumps(audit_report).encode())
         href = f"""
@@ -347,15 +332,7 @@ def scan_docker_networks():
             )
     ui.success('Docker Networks Scan Complete')
 
-    report = {}
-    while not output_q.empty():
-        result = output_q.get()
-        for key in result.keys():
-            if key in report.keys():
-                report[key].update(result[key])
-            else:
-                report[key] = {}
-                report[key].update(result[key])
+    report = utils.parse_output_queue_2_dict(output_q)
 
     b64report = base64.b64encode(json.dumps(report).encode())
     href = f"""
@@ -370,17 +347,7 @@ def scan_docker_networks():
 
     if docker_nw_scan_audit:
         audit_report = {}
-        while not audit_q.empty():
-            result = audit_q.get()
-
-            for key in result.keys():
-                if not key in audit_report.keys():
-                    audit_report[key] = []
-
-                audit_report[key].extend(result[key])
-
         ui.json(audit_report)
-    pass
 
 
 def main():

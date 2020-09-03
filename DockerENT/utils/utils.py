@@ -3,6 +3,34 @@
 import copy
 
 
+def parse_output_queue_2_dict(output_q):
+    """Utility function to parse the output queue to python dict."""
+    report = {}
+    while not output_q.empty():
+        result = output_q.get()
+        for key in result.keys():
+            if key in report.keys():
+                report[key].update(result[key])
+            else:
+                report[key] = {}
+                report[key].update(result[key])
+
+    return report
+
+
+def parse_audit_queue_2_dict(audit_q):
+    """Utility function to parse the audit queue to python dict."""
+    audit_report = {}
+    while not audit_q.empty():
+        result = audit_q.get()
+        for key in result.keys():
+            if not key in audit_report.keys():
+                audit_report[key] = []
+
+            audit_report[key].extend(result[key])
+    return audit_report
+
+
 def get_value_from_str_dotted_key(d, dotted_key):
     """Get value from python dict via dotted notation.
 
