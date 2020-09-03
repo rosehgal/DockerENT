@@ -4,13 +4,13 @@
 
 # DockerENT
 
-DockerENT is activ**E** ru**N**time application scanning **T**ool (**RAST** tool) and framework which is pluggable and written in python. It comes with **CLI application** and clean **Web Interface** written with [StreamLit](https://www.streamlit.io/).
+DockerENT is activ**E** ru**N**time application security scanning **T**ool (**RAST** tool) and framework which is pluggable and written in python. It comes with a **CLI application** and clean **Web Interface** written with [StreamLit](https://www.streamlit.io/).
 
-DockerENT is designed keeping in mind that during deployments there weak configurations which are sticky in production deployments as well and can lead to severe consequences. This application connects with running containers in the system and fetches the list of weak and vulnerable runtime configurtions and generates a report. If invoked through CLI it can create `JSON` and `HTML` report. If invoked through **web** interface, it can display the scan and audit report in the UI itself.
+DockerENT has been designed keeping in mind that during deployments there weak configurations which may get sticky in production deployments as well and can lead to severe consequences. This application connects with running containers in the system and fetches the list of weak and vulnerable runtime configurations and generates a report. If invoked through CLI it can create `JSON` and `HTML` report. If invoked through **web** interface, it can display the scan and audit report in the UI itself.
 
 ## How to Run
 
-DockerENT has been designed to keep simplicity and usability in mind. Currently you just have to clone the repository and download dependencies. Once the dependecies are installed in local system we are good to run the tool and analyse Runtime configurations for running containers.
+DockerENT has been designed to keep simplicity and usability in mind. Currently you just have to clone the repository and download dependencies. Once the dependencies are installed in local system we are good to run the tool and analyse the runtime configurations for running containers.
 
 ```bash
 # Download and setup
@@ -164,6 +164,6 @@ def _audit(container, results, audit_queue):
 - Rely on third party lib [StreamLit](https://www.streamlit.io/), all issues with framework are inherent.
 
 
-#### Help Make this tool better
+### Help Make this tool better
 - Create a PR, Issues are more than welcome.
 - Try it, test it and enhance it.
