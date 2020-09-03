@@ -14,7 +14,7 @@ setuptools.setup(
     description="A tool to analyse issues with running docker container(s)",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/LazyOffSec/DockerENT",
+    url="https://github.com/r0hi7/DockerENT",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -25,7 +25,7 @@ setuptools.setup(
     install_required=_requires,
     entry_points={
         'console_scripts': {
-            'DockerENT = DockerENT.controller:main'
+            'DockerENT = DockerENT.__main__'
         }
     },
 
