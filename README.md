@@ -4,9 +4,9 @@
 
 # DockerENT
 
-DockerENT is activ**E** ru**N**time application scanning **T**ool (**RAST** tool) and framework which is pluggable and written in python. It comes with **CLI application** and **Web Interface** written with [StreamLit](https://www.streamlit.io/).
+DockerENT is activ**E** ru**N**time application scanning **T**ool (**RAST** tool) and framework which is pluggable and written in python. It comes with **CLI application** and clean **Web Interface** written with [StreamLit](https://www.streamlit.io/).
 
-DockerENT is designed keeping in mind that during deployments there weak configurations which are sticky in production deployments and leads to severe consequenes. This application connects with running containers in the system and fetches the list of malicious runtime configurtions and generates a report. If invoked through CLI it can create `JSON` and `HTML` report. If invoked through **web** interface, it can display the scan and audit report in the UI itself.
+DockerENT is designed keeping in mind that during deployments there weak configurations which are sticky in production deployments as well and can lead to severe consequences. This application connects with running containers in the system and fetches the list of weak and vulnerable runtime configurtions and generates a report. If invoked through CLI it can create `JSON` and `HTML` report. If invoked through **web** interface, it can display the scan and audit report in the UI itself.
 
 ## How to Run
 
@@ -65,7 +65,7 @@ See this quick video to get started with.
 - [Output plugins](https://github.com/r0hi7/DockerENT/tree/master/DockerENT/output_plugins) can write to `file` and `html` sinks.
 - The only open source interactive docker scanning tool.
 - Can run plugins in parallel.
-- Under active development.
+- Under active development :smile:.
 
 ### How to Create your own Plugin.
 - Have some **idea** to perform runtime scan.
@@ -138,6 +138,8 @@ def _audit(container, results, audit_queue):
 | NETWORK            	| [File](DockerENT/docker_plugins/docker_network_info.py)            	| Identify Network state               	| Identifies All mapped ports.        	|
 | PLAINTEST_PASSWORD 	| [File](DockerENT/docker_plugins/docker_plaintext_password_info.py) 	| Identify password in different files 	|                                     	|
 | SECURITY_PROFILES  	| [File](DockerENT/docker_plugins/docker_security_profiles_info.py)  	| Identify Weak Security Profiles      	| List Weak security profiles.        	|
+|USER_INFO      |         [File](DockerENT/docker_plugins/docker_user_info.py)|Identify user info| List permissions in passwd and other sensitive files|
+|SYSTEM_INFO      |       [File](DockerENT/docker_plugins/docker_system_info.py)|Identify docker system info| No Audit|
 
 ### CLI interface
 #### Pros
