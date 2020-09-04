@@ -38,7 +38,7 @@ Then run the application like:
 Thats it.
 
 ### Run the latest master
-DockerENT has been designed to keep simplicity and usability in mind. Currently you just have to clone the repository and download dependencies. Once the dependencies are installed in local system we are good to run the tool and analyse the runtime configurations for running containers.
+DockerENT has been designed to keep simplicity and usability in mind. Currently you just have to clone the repository and download dependencies or build the Dockerfile. Once the dependencies are installed in local system we are good to run the tool and analyse the runtime configurations for running containers.
 
 ```bash
 # Download and setup
@@ -74,6 +74,11 @@ optional arguments:
 
   -o [OUTPUT], --output [OUTPUT]
                         Output plugin to write data to.
+
+# or via the container
+docker build . -t dockerent
+docker run -d -v /var/run/docker.sock:/var/run/docker.sock -p 8501:8501 --name dockerent dockerent
+# Then just open your browser to http://localhost:8051
 ```
 See this quick video to get started with.
 <p align="center">
