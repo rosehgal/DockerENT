@@ -22,7 +22,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
-    install_required=_requires,
+    install_requires=_requires,
     entry_points={
         'console_scripts': {
             'DockerENT = DockerENT.__main__:start'
