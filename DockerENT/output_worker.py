@@ -5,7 +5,7 @@ import logging
 _log = logging.getLogger(__name__)
 
 
-def output_handler(queue, target):
+def output_handler(queue, target, filename='out.json'):
     """Worker function passes the queue to target.
 
     :param queue: This queue holds the output from each plugin executed.
@@ -17,4 +17,4 @@ def output_handler(queue, target):
     :return: None
     """
     output_plugin = importlib.import_module('DockerENT.output_plugins.'+target)
-    output_plugin.write(queue)
+    output_plugin.write(queue, filename)

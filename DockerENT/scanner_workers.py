@@ -58,7 +58,8 @@ def executor(target,
     module.scan(target, output_queue, audit, audit_queue)
 
 
-def docker_scan_worker(containers, plugins, process_pool, output_queue):
+def docker_scan_worker(containers, plugins, process_pool, output_queue,
+                       audit, audit_queue):
     """Docker scan worker.
 
     :param containers: Containers to scan.
@@ -98,7 +99,8 @@ def docker_scan_worker(containers, plugins, process_pool, output_queue):
     executor_args = []
     for container in containers:
         for plugin in plugins:
-            executor_args.append((container.id, plugin, output_queue, True,))
+            executor_args.append(
+                (container.id, plugin, output_queue, True, audit, audit_queue))
 
     _log.debug(executor_args)
 

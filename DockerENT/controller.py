@@ -28,13 +28,19 @@ def main(docker_containers,
 
     process_pool = pool.Pool(process_count)
     output_q = multiprocessing.Manager().Queue()
+    audit_q = None
+
+    if audit:
+        audit_q = multiprocessing.Manager().Queue()
 
     if docker_containers is not None:
         scanner_workers.docker_scan_worker(
             containers=docker_containers,
             plugins=docker_plugins,
             process_pool=process_pool,
-            output_queue=output_q
+            output_queue=output_q,
+            audit=audit,
+            audit_queue=audit_q
         )
 
     if docker_nws is not None:
@@ -51,3 +57,10 @@ def main(docker_containers,
     output_worker.output_handler(
         queue=output_q,
         target=output)
+
+    if audit:
+        output_worker.output_handler(
+            queue=audit_q,
+            target=output,
+            filename='audit.json'
+        )
