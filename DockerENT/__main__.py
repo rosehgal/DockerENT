@@ -138,8 +138,8 @@ def start():
     if webapp:
         _log.info('Starting web application ...')
 
-        sys.path.append(os.path.abspath(os.path.join('..')))
-        web_app_cmd = "streamlit run web_app.py"
+        web_app_file_name = os.path.dirname(DockerENT.__file__) + '/web_app.py'
+        web_app_cmd = "streamlit run " + web_app_file_name
 
         with subprocess.Popen(web_app_cmd.split(" ")) as web_process:
             _log.info(web_process.stdout.read())
