@@ -10,6 +10,18 @@ DockerENT has been designed keeping in mind that during deployments there weak c
 
 ## How to Run
 
+### TL;DR
+In hurry to test this? Download the latest **stable REL** from PyPi and run the Web App, everything else is intuitive.
+
+`pip install DockerENT`
+
+Then run the application like: 
+
+`DockerENT -w`
+
+Thats it.
+
+### Run the latest master
 DockerENT has been designed to keep simplicity and usability in mind. Currently you just have to clone the repository and download dependencies. Once the dependencies are installed in local system we are good to run the tool and analyse the runtime configurations for running containers.
 
 ```bash
@@ -140,6 +152,7 @@ def _audit(container, results, audit_queue):
 | SECURITY_PROFILES  	| [File](DockerENT/docker_plugins/docker_security_profiles_info.py)  	| Identify Weak Security Profiles      	| List Weak security profiles.        	|
 |USER_INFO      |         [File](DockerENT/docker_plugins/docker_user_info.py)|Identify user info| List permissions in passwd and other sensitive files|
 |SYSTEM_INFO      |       [File](DockerENT/docker_plugins/docker_system_info.py)|Identify docker system info| No Audit|
+|FILES_INFO|[File](DockerENT/docker_plugins/docker_file_info.py)|Identify world writeable directories and files|List all such files.|
 
 ### CLI interface
 #### Pros
