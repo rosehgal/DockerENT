@@ -26,15 +26,6 @@ def start():
         prog='Find the vulnerabilities hidden in your running container(s).'
     )
 
-    parser.add_argument(
-        '-v',
-        '--version',
-        dest='version',
-        action='store_true',
-        default=False,
-        help='DockerENT version.'
-    )
-
     docker_args_group = parser.add_argument_group()
     docker_args_group.add_argument(
         '-d',
@@ -108,10 +99,6 @@ def start():
     )
 
     args = parser.parse_args()
-
-    if args.version:
-        print(DockerENT.__version__)
-        return
 
     process_count = args.process_count
     output = args.output
