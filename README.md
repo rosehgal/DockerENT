@@ -1,5 +1,21 @@
 <p align="center">
-  <img width="300" height="300" src="static/logo.png">
+  <img width="300" height="300" src="https://raw.githubusercontent.com/r0hi7/DockerENT/master/static/logo.png">
+  <br>
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/r0hi7/DockerENT/Upload%20Python%20Package">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/r0hi7/DockerENT">
+  <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/DockerENT">
+  <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/r0hi7/DockerENT">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/r0hi7/DockerENT">
+  <img alt="GitHub" src="https://img.shields.io/github/license/r0hi7/DockerENT">
+  <br>
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/r0hi7/DockerENT">
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/r0hi7/DockerENT">
+  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/sehgal_rohit?style=social">
+  <img alt="GitHub followers" src="https://img.shields.io/github/followers/r0hi7?style=social">
+  <br>
+  <br>
+  <a target="_blank" href="https://twitter.com/intent/tweet?text=DockerENT: Docker runtime security scanning tool. https://github.com/r0hi7/DockerENT" title="Share on Twitter"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Share%20on%20Twitter"></a>
+  
 </p>
 
 # DockerENT
