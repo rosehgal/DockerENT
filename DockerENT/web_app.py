@@ -12,8 +12,6 @@ import streamlit as ui
 
 ui_sidebar = ui.sidebar
 
-# Title for Web application. Shown main web app
-ui.title("DockerENT")
 
 # Get the docker client to interact with docker api.
 docker_client = docker.from_env()
@@ -158,7 +156,57 @@ def render_sidebar():
 
 def render_ui():
     """Render UI panel."""
-    pass
+
+    # Title for Web application. Shown main web app
+    ui.title("DockerENT")
+    ui.markdown(
+        """
+        <details>
+          <summary text='#ffffff'>DockerENT Quick Help</summary>
+          <p>
+          DockerENT is activ<b>E</b> ru<b>N</b>time application security 
+          scanning <b>T</b>ool 
+          (RAST tool) and framework which is pluggable and written in python.
+          It can quickly spin a web UI and you help you perform analysis on the
+          go.
+          <br>
+          <br>
+          To Get Started, go to sidebar.
+          <br>
+          In the sidebar section, check the scan type Dockers/Docker Networks.
+          <br>
+          Click the container or container networks, Select the Security
+          plugins you want to check across, and hit the start button.
+          <br><br>
+          To know more about this tool checkout 
+          <a href='https://github.com/r0hi7/DockerENT'> DockerENT GitHub </a>
+          <br>
+          If you like this tool, consider sharing and drop in a 🌟.
+          </p>
+        </details>
+        """,
+        unsafe_allow_html=True
+    )
+    custom_html = """
+    <style>
+    details > summary {
+      padding: 4px;
+      background-color: #159EF9;
+      border: none;
+      margin: 4px;
+      box-shadow: 1px 1px 2px #bbbbbb;
+      cursor: pointer;
+    }
+
+    details > p {
+      background-color: #89CDFB;
+      padding: 4px;
+      margin: 8px;
+      box-shadow: 1px 1px 2px #bbbbbb;
+    }
+    </style>
+    """
+    ui.write(custom_html, unsafe_allow_html=True)
 
 
 @ui.cache
@@ -201,7 +249,7 @@ def scan_dockers():
 
     ui.markdown(
         """
-        ### Docker Scan Section.
+        ## Docker Scan Section.
         """
     )
     # Create a Q to handle report from each plugin
@@ -252,7 +300,7 @@ def scan_dockers():
 
     b64report = base64.b64encode(json.dumps(report).encode())
     href = f"""
-    <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+    <a href="data:text/json;base64,{b64report.decode("utf-8")}"
     download="report.json">Download RAW JSON report</a>"""
 
     ui.markdown(
@@ -268,7 +316,7 @@ def scan_dockers():
 
         b64report = base64.b64encode(json.dumps(audit_report).encode())
         href = f"""
-        <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+        <a href="data:text/json;base64,{b64report.decode("utf-8")}"
         download="audit_report.json">Download Audit JSON report</a>"""
 
         ui.markdown(
@@ -285,7 +333,7 @@ def scan_docker_networks():
 
     ui.markdown(
         """
-        ### Docker Network Scan Section.
+        # Docker Network Scan Section.
         """
     )
 
@@ -336,7 +384,7 @@ def scan_docker_networks():
 
     b64report = base64.b64encode(json.dumps(report).encode())
     href = f"""
-    <a href="data:text/json;base64,{b64report.decode("utf-8")}" 
+    <a href="data:text/json;base64,{b64report.decode("utf-8")}"
     download="report.json">Download RAW JSON report</a>"""
 
     ui.markdown(
@@ -352,8 +400,8 @@ def scan_docker_networks():
 
 def main():
     """Start the UI Application."""
-    render_sidebar()
     render_ui()
+    render_sidebar()
 
 
 try:
