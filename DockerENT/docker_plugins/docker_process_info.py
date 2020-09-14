@@ -9,7 +9,7 @@ _log = logging.getLogger(__name__)
 _plugin_name_ = 'procinfo'
 
 
-def scan(container, output_queue):
+def scan(container, output_queue, audit=False, audit_queue=None):
     """Docker running processes-info plugin scan.
 
     :param container: container instance.
