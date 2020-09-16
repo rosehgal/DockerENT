@@ -38,7 +38,7 @@ def scan(container, output_queue, audit=False, audit_queue=None):
     running_processes = {
         "Running_Processes": {
             "msg": " Check all running processes inside container. ",
-            "results": [[]]
+            "results": []
         },
 
     }
