@@ -8,8 +8,8 @@ import pkgutil
 import streamlit as ui
 
 import DockerENT
-import DockerENT.scanner_workers
-import DockerENT.utils
+from DockerENT import scanner_workers
+from DockerENT.utils import utils
 
 ui_sidebar = ui.sidebar
 
