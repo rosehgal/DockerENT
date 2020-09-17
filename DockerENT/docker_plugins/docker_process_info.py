@@ -32,8 +32,8 @@ def scan(container, output_queue, audit=False, audit_queue=None):
     _log.info('Staring {} Plugin ...'.format(_plugin_name_))
 
     api_client = docker.APIClient()
-    container_obj = api_client.containers(container.short_id)
-    top_result = api_client.top(container_obj[0])
+
+    top_result = api_client.top(container.short_id)
 
     running_processes = {
         "Running_Processes": {
@@ -44,9 +44,8 @@ def scan(container, output_queue, audit=False, audit_queue=None):
     }
 
     for option in running_processes.keys():
-        top_result['Processes'].insert(0, top_result['Titles'])
         for result in top_result['Processes']:
-            running_processes[option]['results'].append(result)
+            running_processes[option]['results'].append(" ".join(result))
 
     res[container.short_id] = {
         _plugin_name_: running_processes

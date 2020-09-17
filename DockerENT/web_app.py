@@ -1,7 +1,4 @@
 """Web App for DockerENT."""
-from DockerENT import scanner_workers
-from DockerENT.utils import utils
-
 import base64
 import docker
 import DockerENT
@@ -9,6 +6,10 @@ import json
 import multiprocessing
 import pkgutil
 import streamlit as ui
+
+import DockerENT
+import DockerENT.scanner_workers
+import DockerENT.utils
 
 ui_sidebar = ui.sidebar
 
@@ -216,6 +217,7 @@ class Executor:
                              plugin,
                              output_queue,
                              audit_queue):
+
         scanner_workers.executor(
             target=target,
             plugin=plugin,
@@ -287,6 +289,7 @@ def scan_dockers():
     with ui.spinner('**Scanning** dockers ..'):
         for i in AutoUpdateProgressBar(range(len(target_plugin)),
                                        docker_scan_progress_bar):
+
             executor.docker_scan_executor(
                 target=target_plugin[i][0].short_id,
                 plugin=target_plugin[i][1],

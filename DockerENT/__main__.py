@@ -4,7 +4,8 @@ Script will load any config file and make it available to application.
 """
 from DockerENT import config_parser
 from DockerENT import controller
-import DockerENT
+from rich import print as rich_print
+
 
 import argparse
 import logging.config
@@ -12,6 +13,7 @@ import os
 import signal
 import subprocess
 import sys
+import DockerENT
 
 
 def start():
@@ -115,7 +117,7 @@ def start():
 
     def sigterm_handler(_signo, _stack_frame):
         """Signal handler."""
-        _log.info("Thanks for using DockerENT")
+        rich_print("[bold green]Thanks for using DockerENT[/bold green]")
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sigterm_handler)
@@ -123,13 +125,13 @@ def start():
     # Start DockerENT
     # If webapp, start Streamlit else cli application.
     if webapp:
-        _log.info('Starting web application ...')
+        rich_print('[bold green]Starting web application ...[/bold green]')
 
         web_app_file_name = os.path.dirname(DockerENT.__file__) + '/web_app.py'
         web_app_cmd = "streamlit run " + web_app_file_name
 
         with subprocess.Popen(web_app_cmd.split(" ")) as web_process:
-            _log.info(web_process.stdout.read())
+            rich_print(web_process.stdout.read())
 
     else:
         controller.main(docker_containers=docker_containers,
