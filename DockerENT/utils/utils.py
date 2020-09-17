@@ -72,9 +72,14 @@ def docker_network_response_parser(port_mapping_list):
     result = []
     port_map = port_mapping_list[0]
     for pm in port_map.keys():
-        result.append(
-            "HostIp("+port_map[pm][0]['HostIp'] +
-            "):HostPort("+port_map[pm][0]['HostPort'] +
-            "):GuestPort("+pm+")"
-        )
+        if port_map[pm] is not None:
+            result.append(
+                "HostIp("+port_map[pm][0]['HostIp'] +
+                "):HostPort("+port_map[pm][0]['HostPort'] +
+                "):GuestPort("+pm+")"
+            )
+        else:
+            result.append(
+                "GuestPort("+pm+")"
+            )
     return result
