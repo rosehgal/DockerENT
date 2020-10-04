@@ -174,6 +174,7 @@ def _audit(container, results, audit_queue):
 |USER_INFO      |         [File](DockerENT/docker_plugins/docker_user_info.py)|Identify user info| List permissions in passwd and other sensitive files|
 |SYSTEM_INFO      |       [File](DockerENT/docker_plugins/docker_system_info.py)|Identify docker system info| No Audit|
 |FILES_INFO|[File](DockerENT/docker_plugins/docker_file_info.py)|Identify world writeable directories and files|List all such files.|
+|PROC_INFO| [File](DockerENT/docker_plugins/docker_process_info.py)| Identify the list of process in docker system| |
 
 ### CLI interface
 #### Pros
