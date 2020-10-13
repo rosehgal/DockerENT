@@ -20,9 +20,10 @@
 
 # DockerENT
 
-DockerENT is activ**E** ru**N**time application security scanning **T**ool (**RAST** tool) and framework which is pluggable and written in python. It comes with a **CLI application** and clean **Web Interface** written with [StreamLit](https://www.streamlit.io/).
+DockerENT is activ**E** ru**N**time application security scanning **T**ool (**RAST** tool). It is a pluggable framework written in Python. It comes with a **CLI application** and a clean **Web Interface** written using [StreamLit](https://www.streamlit.io/). 
 
-DockerENT has been designed keeping in mind that during deployments there weak configurations which may get sticky in production deployments as well and can lead to severe consequences. This application connects with running containers in the system and fetches the list of weak and vulnerable runtime configurations and generates a report. If invoked through CLI it can create `JSON` and `HTML` report. If invoked through **web** interface, it can display the scan and audit report in the UI itself.
+DockerENT has been designed to detect weak security misconfigurations in production deployments which can lead to severe consequences. This application connects with running containers in the system and fetches the list of weak and vulnerable runtime configurations and generates a report.
+If invoked through **web** interface, it can display the scan and audit report in the UI itself.
 
 ## How to Run
 
