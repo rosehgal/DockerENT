@@ -128,7 +128,7 @@ def start():
         rich_print('[bold green]Starting web application ...[/bold green]')
 
         web_app_file_name = os.path.dirname(DockerENT.__file__) + '/web_app.py'
-        web_app_cmd = "streamlit run " + web_app_file_name
+        web_app_cmd = "streamlit run " + web_app_file_name + "  --server.address=127.0.0.1"
 
         with subprocess.Popen(web_app_cmd.split(" ")) as web_process:
             rich_print(web_process.stdout.read())
