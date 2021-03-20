@@ -5,7 +5,7 @@ colorama==0.4.3
 commonmark==0.9.1
 docker==4.2.1
 idna==2.9
-Jinja2==2.11.2
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
 pprintpp==0.4.0
