@@ -12,7 +12,7 @@ pprintpp==0.4.0
 pycodestyle==2.6.0
 pydocstyle==5.0.2
 pyflakes==2.2.0
-Pygments==2.6.1
+Pygments==2.7.4
 pylama==7.7.1
 PyYAML==5.3.1
 requests==2.24.0
