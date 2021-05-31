@@ -10,7 +10,7 @@
   <br>
   <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/r0hi7/DockerENT">
   <img alt="GitHub stars" src="https://img.shields.io/github/stars/r0hi7/DockerENT">
-  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/sehgal_rohit?style=social">
+  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/sec_r0?style=social">
   <img alt="GitHub followers" src="https://img.shields.io/github/followers/r0hi7?style=social">
   <br>
   <br>
