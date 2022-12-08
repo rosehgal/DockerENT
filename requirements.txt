@@ -1,5 +1,5 @@
 streamlit
-certifi==2020.6.20
+certifi==2022.12.7
 chardet==3.0.4
 colorama==0.4.3
 commonmark==0.9.1
